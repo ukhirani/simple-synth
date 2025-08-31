@@ -20,27 +20,45 @@ public:
     return dynamic_cast<SynthSound *>(sound) != nullptr;
   }
   void startNote(int midiNoteNumber, float velocity, SynthesiserSound *sound,int currentPitchWheelPosition) override {
-    //find the equivalent frequency for the note that is being played
+
+    env1.trigger = 1;
+
+    //velocity will be ranging from 0.0 to 1.0 so that is the float value that we are multiplying with the sound source's amplitude
     level = velocity;
+
+
+    //find the equivalent frequency for the note that is being played
     frequency = MidiMessage::getMidiNoteInHertz(midiNoteNumber);
-    // std::cout << midiNoteNumber << std::endl;
-    // std::cout<<velocity << std::endl;
+
   }
   void stopNote(float velocity, bool allowTailOff) override {
-    level = 0;
-    clearCurrentNote();
+
+    env1.trigger = 0;
+    allowTailOff = true;
+    if (velocity == 0) {
+      clearCurrentNote();
+    }
+
 
 
   }
   void pitchWheelMoved(int newPitchWheelValue) override {}
   void controllerMoved(int controllerNumber, int newControllerValue) override {}
-  void renderNextBlock(AudioBuffer<float> &outputBuffer, int startSample,
-                       int numSamples) override {
+  void renderNextBlock(AudioBuffer<float> &outputBuffer, int startSample, const int numSamples) override {
+
+    env1.setAttack(2000); //2000 ms = 2 seconds
+    env1.setDecay(500);
+    env1.setSustain(0.8);
+    env1.setRelease(2000);
 
     for (int i = 0; i < numSamples; i++) {
-      const float theWave = osc1.saw(frequency) * level;
+
+      const float theWave = osc1.saw(frequency);
+      double theSound = env1.adsr(theWave,env1.trigger) * level ;
+
+
       for (int channel = 0;channel < outputBuffer.getNumChannels();channel++) {
-        outputBuffer.addSample(channel,startSample,theWave);
+        outputBuffer.addSample(channel,startSample,theSound);
       }
       ++startSample;
     }
@@ -49,6 +67,7 @@ public:
 private:
   double frequency = 440.0f;
   maxiOsc osc1;
+  maxiEnv env1;
   float level = 0.0;
 
 };
