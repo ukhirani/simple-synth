@@ -14,7 +14,8 @@
 //==============================================================================
 /**
 */
-class SimpleSynthAudioProcessorEditor  : public juce::AudioProcessorEditor
+class SimpleSynthAudioProcessorEditor  : public juce::AudioProcessorEditor,
+                                         public Slider::Listener
 {
 public:
     SimpleSynthAudioProcessorEditor (SimpleSynthAudioProcessor&);
@@ -24,10 +25,16 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
 
+    void sliderValueChanged(juce::Slider* slider) override;
+
 private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
-    SimpleSynthAudioProcessor& audioProcessor;
+    SimpleSynthAudioProcessor& processor;
+
+    ScopedPointer<AudioProcessorValueTreeState::SliderAttachment> sliderTree;
+    Slider AttackSlider;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleSynthAudioProcessorEditor)
+
 };

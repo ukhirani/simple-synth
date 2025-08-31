@@ -19,7 +19,7 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       )
+                       ), tree(*this, nullptr, "PARAMETERS", { std::make_unique<juce::AudioParameterFloat>("attack", "Attack", 0.1f, 5000.0f, 100.0f) })
 #endif
 {
     mySynth.clearVoices();
@@ -97,6 +97,15 @@ void SimpleSynthAudioProcessor::changeProgramName (int index, const juce::String
 {
 }
 
+AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::createParameterLayout()
+{
+    std::vector<std::unique_ptr<RangedAudioParameter>> params;
+
+    params.push_back(std::make_unique<AudioParameterFloat>("attack", "Attack", 0.1f, 5000.0f, 100.0f));
+
+    return { params.begin(), params.end() };
+}
+
 //==============================================================================
 void SimpleSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
@@ -155,6 +164,12 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
     // for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
     //     buffer.clear (i, 0, buffer.getNumSamples());
+
+    for (int i = 0;i<mySynth.getNumVoices();i++) {
+        if ((myVoice = dynamic_cast<SynthVoice *>(mySynth.getVoice(i)))) {
+            myVoice->setAttack(tree.getRawParameterValue("attack")->load());
+        }
+    }
 
     buffer.clear();
     mySynth.renderNextBlock(buffer,midiMessages,0,buffer.getNumSamples());

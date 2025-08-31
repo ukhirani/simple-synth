@@ -15,9 +15,20 @@
 
 class SynthVoice : public SynthesiserVoice {
 public:
+  SynthVoice() {
+    // Initialize the envelope with default values
+    env1.setAttack(100.0);
+    env1.setDecay(500.0);
+    env1.setSustain(0.8);
+    env1.setRelease(2000.0);
+    env1.trigger = 0;
+  }
   bool canPlaySound(SynthesiserSound *sound) override {
     // it will return true only if the cast is successful otherwise false.
     return dynamic_cast<SynthSound *>(sound) != nullptr;
+  }
+  void setAttack(float attack) {
+    env1.setAttack(static_cast<double>(attack));
   }
   void startNote(int midiNoteNumber, float velocity, SynthesiserSound *sound,int currentPitchWheelPosition) override {
 
@@ -46,7 +57,8 @@ public:
   void controllerMoved(int controllerNumber, int newControllerValue) override {}
   void renderNextBlock(AudioBuffer<float> &outputBuffer, int startSample, const int numSamples) override {
 
-    env1.setAttack(2000); //2000 ms = 2 seconds
+
+    //2000 ms = 2 seconds
     env1.setDecay(500);
     env1.setSustain(0.8);
     env1.setRelease(2000);
