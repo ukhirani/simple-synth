@@ -33,10 +33,16 @@ juce_add_plugin(SimpleSynth
 # Generate JuceHeader.h for this target
 juce_generate_juce_header(SimpleSynth)
 
-# Add source files to the target using target_sources (JUCE best practice)
+#target_sources(SimpleSynth PRIVATE
+#        Source/PluginProcessor.cpp
+#        Source/PluginEditor.cpp
+#)
+# Collect all .cpp files from the 'Source' directory
+file(GLOB SYNTH_SOURCES "Source/*.cpp")
+
+# Add the collected sources to the target
 target_sources(SimpleSynth PRIVATE
-        Source/PluginProcessor.cpp
-        Source/PluginEditor.cpp
+    ${SYNTH_SOURCES}
 )
 
 target_link_libraries(SimpleSynth PRIVATE
