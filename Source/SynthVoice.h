@@ -55,10 +55,11 @@ public:
 
       const float theWave = osc1.saw(frequency);
       double theSound = env1.adsr(theWave,env1.trigger) * level ;
+      double filteredSound = filter1.lores(theSound,200,0.1);
 
 
       for (int channel = 0;channel < outputBuffer.getNumChannels();channel++) {
-        outputBuffer.addSample(channel,startSample,theSound);
+        outputBuffer.addSample(channel,startSample,filteredSound);
       }
       ++startSample;
     }
@@ -68,6 +69,8 @@ private:
   double frequency = 440.0f;
   maxiOsc osc1;
   maxiEnv env1;
+  maxiFilter filter1;
+
   float level = 0.0;
 
 };
