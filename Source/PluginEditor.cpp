@@ -20,9 +20,9 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
     setSize (500, 500);
 
 
-    AttackSlider.setSliderStyle(Slider::SliderStyle::LinearBarVertical);
+    AttackSlider.setSliderStyle(Slider::SliderStyle::RotaryHorizontalVerticalDrag);
     AttackSlider.setRange(0.1f,5000.0f);
-    AttackSlider.setTextBoxStyle(Slider::TextBoxBelow,true,20.0,10.0);
+    AttackSlider.setTextBoxStyle(Slider::TextBoxBelow,true,200.0,20.0);
     AttackSlider.setValue(100.0f);
     AttackSlider.addListener(this);
     addAndMakeVisible(&AttackSlider);
@@ -51,7 +51,7 @@ void SimpleSynthAudioProcessorEditor::resized()
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor.
 
-    AttackSlider.setBounds(10,10,40,100);
+    AttackSlider.setBounds(10,10,200,200);
 }
 
 void SimpleSynthAudioProcessorEditor::sliderValueChanged(juce::Slider* slider)

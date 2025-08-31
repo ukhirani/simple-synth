@@ -67,7 +67,8 @@ public:
 
       const float theWave = osc1.saw(frequency);
       double theSound = env1.adsr(theWave,env1.trigger) * level ;
-      double filteredSound = filter1.lores(theSound,200,0.1);
+      double filteredSound = filter1.lores(theSound,20000,0.1);
+      filteredSound = theSound;
 
 
       for (int channel = 0;channel < outputBuffer.getNumChannels();channel++) {
