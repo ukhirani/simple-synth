@@ -14,12 +14,12 @@
 class SynthSound : public SynthesiserSound {
   public:
     //returns true if this sound should be played when a given midi note is pressed
-    bool appliesToNote (int midiNoteNumber){
+    bool appliesToNote (int midiNoteNumber) override {
       return true;
     }
 
     //returns true if the sound should be triggered by midi events on a given channel
-    bool appliesToChannel (int midiChannel){
+    bool appliesToChannel (int midiChannel) override{
       return true;
     }
 };
