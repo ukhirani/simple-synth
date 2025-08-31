@@ -37,8 +37,26 @@ juce_generate_juce_header(SimpleSynth)
 #        Source/PluginProcessor.cpp
 #        Source/PluginEditor.cpp
 #)
+
+
 # Collect all .cpp files from the 'Source' directory
 file(GLOB SYNTH_SOURCES "Source/*.cpp")
+
+# Add Maximilian sources
+set(MAXIMILIAN_SOURCES
+        MaximilianDSP/maximilian.cpp
+)
+
+# Add the collected sources to the target
+target_sources(SimpleSynth PRIVATE
+        ${SYNTH_SOURCES}
+        ${MAXIMILIAN_SOURCES}
+)
+
+# Add include directory for Maximilian
+target_include_directories(SimpleSynth PRIVATE
+        MaximilianDSP
+)
 
 # Add the collected sources to the target
 target_sources(SimpleSynth PRIVATE
