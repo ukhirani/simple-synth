@@ -22,4 +22,7 @@ class SynthSound : public SynthesiserSound {
     bool appliesToChannel (int midiChannel) override{
       return true;
     }
+
+
+
 };

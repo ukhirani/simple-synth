@@ -11,6 +11,9 @@
 #include <JuceHeader.h>
 #include "SynthSound.h"
 #include "SynthVoice.h"
+#include "../MaximilianDSP/maximilian.h"
+
+
 
 //==============================================================================
 /**
@@ -59,4 +62,10 @@ private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleSynthAudioProcessor)
     Synthesiser mySynth;
+    SynthVoice* myVoice;
+
+    double lastSampleRate;
+
+
+
 };

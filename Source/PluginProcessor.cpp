@@ -22,6 +22,13 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
                        )
 #endif
 {
+    mySynth.clearVoices();
+    int numChannels = 5;
+    for (int i = 0; i < numChannels; ++i) {
+        mySynth.addVoice(new SynthVoice());
+    }
+    mySynth.clearSounds();
+    mySynth.addSound(new SynthSound());
 }
 
 SimpleSynthAudioProcessor::~SimpleSynthAudioProcessor()
@@ -94,7 +101,10 @@ void SimpleSynthAudioProcessor::changeProgramName (int index, const juce::String
 void SimpleSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     // Use this method as the place to do any pre-playback
-    // initialisation that you need..
+    // initialisation that you need.
+    ignoreUnused(sampleRate);
+    lastSampleRate = sampleRate;
+    mySynth.setCurrentPlaybackSampleRate(lastSampleRate);
 }
 
 void SimpleSynthAudioProcessor::releaseResources()
@@ -141,8 +151,13 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     // This is here to avoid people getting screaming feedback
     // when they first compile a plugin, but obviously you don't need to keep
     // this code if your algorithm always overwrites all the output channels.
-    for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
-        buffer.clear (i, 0, buffer.getNumSamples());
+
+
+    // for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
+    //     buffer.clear (i, 0, buffer.getNumSamples());
+
+    buffer.clear();
+    mySynth.renderNextBlock(buffer,midiMessages,0,buffer.getNumSamples());
 
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...
@@ -150,12 +165,9 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     // the samples and the outer loop is handling the channels.
     // Alternatively, you can process the samples with the channels
     // interleaved by keeping the same state.
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
-    {
-        auto* channelData = buffer.getWritePointer (channel);
 
-        // ..do something to the data...
-    }
+
+
 }
 
 //==============================================================================
