@@ -38,6 +38,13 @@ private:
     Slider SustainSlider;
     Slider ReleaseSlider;
 
+
+    // ADSR labels
+    Label ALabel;
+    Label DLabel;
+    Label SLabel;
+    Label RLabel;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleSynthAudioProcessorEditor)
 
 };
