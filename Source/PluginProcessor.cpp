@@ -19,7 +19,13 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       ), tree(*this, nullptr, "PARAMETERS", { std::make_unique<juce::AudioParameterFloat>("attack", "Attack", 0.1f, 5000.0f, 100.0f) })
+                       ), tree(*this, nullptr, "PARAMETERS", {
+                           std::make_unique<juce::AudioParameterFloat>("attack", "Attack", 0.1f, 5000.0f, 100.0f),
+                           std::make_unique<juce::AudioParameterFloat>("decay", "Decay", 0.1f, 5000.0f, 100.0f),
+                           std::make_unique<juce::AudioParameterFloat>("sustain", "Sustain", 0.1f, 5000.0f, 100.0f),
+                           std::make_unique<juce::AudioParameterFloat>("release", "Release", 0.1f, 5000.0f, 100.0f)
+                        //    std::make_unique<juce::AudioParameterFloat>("frequency", "Frequency", 20.0f, 20000.0f, 440.0f),
+                       })
 #endif
 {
     mySynth.clearVoices();
@@ -102,6 +108,7 @@ AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::createP
     std::vector<std::unique_ptr<RangedAudioParameter>> params;
 
     params.push_back(std::make_unique<AudioParameterFloat>("attack", "Attack", 0.1f, 5000.0f, 100.0f));
+    params.push_back(std::make_unique<AudioParameterFloat>("release", "Release", 0.1f, 5000.0f, 100.0f));
 
     return { params.begin(), params.end() };
 }
@@ -168,6 +175,10 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     for (int i = 0;i<mySynth.getNumVoices();i++) {
         if ((myVoice = dynamic_cast<SynthVoice *>(mySynth.getVoice(i)))) {
             myVoice->setAttack(tree.getRawParameterValue("attack")->load());
+            myVoice->setDecay(tree.getRawParameterValue("decay")->load());
+            myVoice->setSustain(tree.getRawParameterValue("sustain")->load());
+            myVoice->setRelease(tree.getRawParameterValue("release")->load());
+
         }
     }
 

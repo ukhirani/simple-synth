@@ -34,6 +34,9 @@ private:
 
     ScopedPointer<AudioProcessorValueTreeState::SliderAttachment> sliderTree;
     Slider AttackSlider;
+    Slider DecaySlider;
+    Slider SustainSlider;
+    Slider ReleaseSlider;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleSynthAudioProcessorEditor)
 

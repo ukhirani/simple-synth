@@ -60,6 +60,9 @@ public:
 
     AudioProcessorValueTreeState tree;
     float AttackTime;
+    float DecayTime;
+    float SustainTime;
+    float ReleaseTime;
 
 private:
     //==============================================================================

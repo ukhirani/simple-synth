@@ -29,7 +29,22 @@ public:
   }
   void setAttack(float attack) {
     env1.setAttack(static_cast<double>(attack));
+
   }
+
+  void setDecay(float decay) {
+    env1.setDecay(static_cast<double>(decay));
+  }
+
+  void setSustain(float sustain) {
+    env1.setSustain(static_cast<double>(sustain));
+  }
+
+  void setRelease(float release) {
+    env1.setRelease(static_cast<double>(release));
+  }
+
+
   void startNote(int midiNoteNumber, float velocity, SynthesiserSound *sound,int currentPitchWheelPosition) override {
 
     env1.trigger = 1;
@@ -40,6 +55,7 @@ public:
 
     //find the equivalent frequency for the note that is being played
     frequency = MidiMessage::getMidiNoteInHertz(midiNoteNumber);
+
 
   }
   void stopNote(float velocity, bool allowTailOff) override {
@@ -59,20 +75,23 @@ public:
 
 
     //2000 ms = 2 seconds
-    env1.setDecay(500);
-    env1.setSustain(0.8);
-    env1.setRelease(2000);
+    // env1.setDecay(500);
+    // env1.setSustain(0.8);
+    // env1.setRelease(2000);
 
     for (int i = 0; i < numSamples; i++) {
 
       const float theWave = osc1.saw(frequency);
       double theSound = env1.adsr(theWave,env1.trigger) * level ;
+
+
+
       double filteredSound = filter1.lores(theSound,20000,0.1);
       filteredSound = theSound;
 
 
       for (int channel = 0;channel < outputBuffer.getNumChannels();channel++) {
-        outputBuffer.addSample(channel,startSample,filteredSound);
+        outputBuffer.addSample(channel,startSample,theSound);
       }
       ++startSample;
     }
@@ -80,6 +99,7 @@ public:
 
 private:
   double frequency = 440.0f;
+
   maxiOsc osc1;
   maxiEnv env1;
   maxiFilter filter1;
