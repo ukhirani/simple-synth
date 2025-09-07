@@ -27,6 +27,9 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
     void FillComboBox();
+    
+    // Getter for the combo box to create attachment
+    ComboBox& getOscMenu() { return oscMenu; }
 
 private:
     ComboBox oscMenu;

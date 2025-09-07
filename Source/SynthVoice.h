@@ -22,6 +22,9 @@ public:
     env1.setSustain(0.8);
     env1.setRelease(2000.0);
     env1.trigger = 0;
+    
+    // Initialize waveType to match the default parameter value (1 = Sine)
+    waveType = 1;
   }
   bool canPlaySound(SynthesiserSound *sound) override {
     // it will return true only if the cast is successful otherwise false.
@@ -73,25 +76,28 @@ public:
   void controllerMoved(int controllerNumber, int newControllerValue) override {}
   void renderNextBlock(AudioBuffer<float> &outputBuffer, int startSample, const int numSamples) override {
 
-
-    //2000 ms = 2 seconds
-    // env1.setDecay(500);
-    // env1.setSustain(0.8);
-    // env1.setRelease(2000);
-
     for (int i = 0; i < numSamples; i++) {
+      // Select oscillator waveform based on waveType
+      double theWave;
+      switch (waveType) {
+        case 1: // Sine
+          theWave = osc1.sinewave(frequency);
+          break;
+        case 2: // Square
+          theWave = osc1.square(frequency);
+          break;
+        case 3: // Saw
+          theWave = osc1.saw(frequency);
+          break;
+        default:
+          theWave = osc1.sinewave(frequency);
+          break;
+      }
+      
+      double theSound = env1.adsr(theWave, env1.trigger) * level;
 
-      const float theWave = osc1.saw(frequency);
-      double theSound = env1.adsr(theWave,env1.trigger) * level ;
-
-
-
-      double filteredSound = filter1.lores(theSound,20000,0.1);
-      filteredSound = theSound;
-
-
-      for (int channel = 0;channel < outputBuffer.getNumChannels();channel++) {
-        outputBuffer.addSample(channel,startSample,theSound);
+      for (int channel = 0; channel < outputBuffer.getNumChannels(); channel++) {
+        outputBuffer.addSample(channel, startSample, theSound);
       }
       ++startSample;
     }
@@ -105,5 +111,10 @@ private:
   maxiFilter filter1;
 
   float level = 0.0;
+  int waveType = 1; // 1=sine, 2=square, 3=saw (default to sine)
 
+public:
+  void setWaveType(int type) {
+    waveType = type;
+  }
 };
