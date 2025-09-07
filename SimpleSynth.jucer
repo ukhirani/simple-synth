@@ -12,6 +12,8 @@
             file="Source/PluginEditor.cpp"/>
       <FILE id="FlSEQF" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
+    <FILE id="rHxC7C" name="Oscillator.cpp" compile="1" resource="0" file="Source/Oscillator.cpp"/>
+    <FILE id="XbnvBU" name="Oscillator.h" compile="0" resource="0" file="Source/Oscillator.h"/>
   </MAINGROUP>
   <MODULES>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
