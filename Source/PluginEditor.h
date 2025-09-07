@@ -10,6 +10,7 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
+#include "Oscillator.h"
 
 //==============================================================================
 /**
@@ -41,6 +42,9 @@ private:
     Slider DecaySlider;
     Slider SustainSlider;
     Slider ReleaseSlider;
+
+    Oscillator oscComponent;
+    
 
 
     // ADSR labels

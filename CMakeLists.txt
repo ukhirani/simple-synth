@@ -63,6 +63,10 @@ target_sources(SimpleSynth PRIVATE
     ${SYNTH_SOURCES}
 )
 
+target_sources(SimpleSynth PRIVATE
+    Source/Oscillator.cpp
+)
+
 target_link_libraries(SimpleSynth PRIVATE
         juce::juce_audio_utils
         juce::juce_audio_processors

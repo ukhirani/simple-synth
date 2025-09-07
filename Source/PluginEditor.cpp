@@ -18,6 +18,10 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
     setSize (1000, 500);
     setResizable(true,true);
 
+    addAndMakeVisible(&oscComponent);
+
+    
+
 
     AttackSlider.setSliderStyle(Slider::SliderStyle::LinearBarVertical);
     AttackSlider.setRange(0.1f,5000.0f);
@@ -70,10 +74,7 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
 
 
 
-    /*
-     * Using std::unique_ptr to properly manage SliderAttachment memory
-     * This fixes the memory leak issue mentioned in the TODO
-     */
+  
     attackAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "attack", AttackSlider);
     decayAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "decay", DecaySlider);
     sustainAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "sustain", SustainSlider);
@@ -110,6 +111,8 @@ void SimpleSynthAudioProcessorEditor::paint (juce::Graphics& g) {
 
 void SimpleSynthAudioProcessorEditor::resized()
 {
+    oscComponent.setBounds(600, 50, 300, 300);
+
     // Slider dimensions and positions
     const int sliderWidth = 50;
     const int sliderHeight = 200;
