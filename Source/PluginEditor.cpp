@@ -71,24 +71,13 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
 
 
     /*
-     *
-     * TODO: fix this below error - find a way to not call the constructors and still attach the slider to the parameter tree
-    * JUCE v8.0.8
-*** Leaked objects detected: 4 instance(s) of class SliderAttachment
-JUCE Assertion failure in juce_LeakedObjectDetector.h:104
-*** Leaked objects detected: 4 instance(s) of class ParameterAttachment
-JUCE Assertion failure in juce_LeakedObjectDetector.h:104
-*** Leaked objects detected: 4 instance(s) of class AsyncUpdater
-JUCE Assertion failure in juce_LeakedObjectDetector.h:104
-     *
-     *
+     * Using std::unique_ptr to properly manage SliderAttachment memory
+     * This fixes the memory leak issue mentioned in the TODO
      */
-
-
-    new AudioProcessorValueTreeState::SliderAttachment(processor.tree, "attack", AttackSlider);
-    new AudioProcessorValueTreeState::SliderAttachment(processor.tree, "decay", DecaySlider);
-    new AudioProcessorValueTreeState::SliderAttachment(processor.tree, "sustain", SustainSlider);
-    new AudioProcessorValueTreeState::SliderAttachment(processor.tree, "release", ReleaseSlider);
+    attackAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "attack", AttackSlider);
+    decayAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "decay", DecaySlider);
+    sustainAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "sustain", SustainSlider);
+    releaseAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "release", ReleaseSlider);
 
 
 

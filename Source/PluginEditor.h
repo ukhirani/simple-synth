@@ -32,7 +32,11 @@ private:
     // access the processor object that created it.
     SimpleSynthAudioProcessor& processor;
 
-    ScopedPointer<AudioProcessorValueTreeState::SliderAttachment> sliderTree;
+    std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> attackAttachment;
+    std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> decayAttachment;
+    std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> sustainAttachment;
+    std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> releaseAttachment;
+    
     Slider AttackSlider;
     Slider DecaySlider;
     Slider SustainSlider;
