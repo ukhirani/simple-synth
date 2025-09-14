@@ -66,6 +66,9 @@ target_sources(SimpleSynth PRIVATE
 target_sources(SimpleSynth PRIVATE
     Source/Oscillator.cpp
 )
+target_sources(SimpleSynth PRIVATE
+        Source/Envelope.cpp
+)
 
 target_link_libraries(SimpleSynth PRIVATE
         juce::juce_audio_utils

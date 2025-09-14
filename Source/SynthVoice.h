@@ -68,6 +68,8 @@ public:
 
 
 
+
+
   }
   void pitchWheelMoved(int newPitchWheelValue) override {}
   void controllerMoved(int controllerNumber, int newControllerValue) override {}
@@ -81,8 +83,8 @@ public:
 
     for (int i = 0; i < numSamples; i++) {
 
-      const float theWave = osc1.saw(frequency);
-      double theSound = env1.adsr(theWave,env1.trigger) * level ;
+      // const float theWave = osc1.saw(frequency);
+      double theSound = env1.adsr(setOscType(),env1.trigger) * level ;
 
 
 
@@ -97,12 +99,30 @@ public:
     }
   }
 
+  void getOscType(atomic<float> * selection) {
+     theWave = *selection;
+  }
+
+  double setOscType() {
+    if (theWave == 0) {
+      return osc1.sinewave(frequency);
+    }
+    if (theWave == 1) {
+      return osc1.saw(frequency);
+    }
+    if (theWave == 2) {
+      return osc1.square(frequency);
+    }
+    return osc1.sinewave(frequency);
+  }
+
 private:
   double frequency = 440.0f;
 
   maxiOsc osc1;
   maxiEnv env1;
   maxiFilter filter1;
+  int theWave;
 
   float level = 0.0;
 

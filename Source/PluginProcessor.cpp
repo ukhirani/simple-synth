@@ -23,7 +23,8 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
                            std::make_unique<juce::AudioParameterFloat>("attack", "Attack", 0.1f, 5000.0f, 100.0f),
                            std::make_unique<juce::AudioParameterFloat>("decay", "Decay", 0.1f, 5000.0f, 100.0f),
                            std::make_unique<juce::AudioParameterFloat>("sustain", "Sustain", 0.1f, 5000.0f, 100.0f),
-                           std::make_unique<juce::AudioParameterFloat>("release", "Release", 0.1f, 5000.0f, 100.0f)
+                           std::make_unique<juce::AudioParameterFloat>("release", "Release", 0.1f, 5000.0f, 100.0f),
+                           std::make_unique<AudioParameterChoice>("wavetype","WaveType",StringArray { "saw", "square", "saw" },0)
                         //    std::make_unique<juce::AudioParameterFloat>("frequency", "Frequency", 20.0f, 20000.0f, 440.0f),
                        })
 #endif
@@ -178,6 +179,7 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
             myVoice->setDecay(tree.getRawParameterValue("decay")->load());
             myVoice->setSustain(tree.getRawParameterValue("sustain")->load());
             myVoice->setRelease(tree.getRawParameterValue("release")->load());
+            myVoice->getOscType(tree.getRawParameterValue("wavetype"));
 
         }
     }

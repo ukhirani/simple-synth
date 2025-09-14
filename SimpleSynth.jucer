@@ -12,6 +12,8 @@
             file="Source/PluginEditor.cpp"/>
       <FILE id="FlSEQF" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
+    <FILE id="SHlGLf" name="Envelope.cpp" compile="1" resource="0" file="Source/Envelope.cpp"/>
+    <FILE id="icgVMD" name="Envelope.h" compile="0" resource="0" file="Source/Envelope.h"/>
     <FILE id="rHxC7C" name="Oscillator.cpp" compile="1" resource="0" file="Source/Oscillator.cpp"/>
     <FILE id="XbnvBU" name="Oscillator.h" compile="0" resource="0" file="Source/Oscillator.h"/>
   </MAINGROUP>

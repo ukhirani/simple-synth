@@ -15,11 +15,16 @@
 
 
 
-Oscillator::Oscillator()
+Oscillator::Oscillator(SimpleSynthAudioProcessor& p):processor(p)
 {
     setSize (200, 200);
     FillComboBox();
     oscMenu.setJustificationType(Justification::centred);
+
+    waveSelection = std::unique_ptr<AudioProcessorValueTreeState::ComboBoxAttachment>(
+        new AudioProcessorValueTreeState::ComboBoxAttachment(processor.tree, "wavetype", oscMenu)
+    );
+
 }
 
 Oscillator::~Oscillator()
@@ -46,7 +51,7 @@ void Oscillator::comboBoxChanged(juce::ComboBox* comboBox)
 
 void Oscillator::resized()
 {
-    Rectangle<int> area = getLocalBounds().reduced(40);
+    Rectangle<int> area = getLocalBounds().reduced(10);
     oscMenu.setBounds(area.removeFromTop(20));
 }
 
@@ -55,5 +60,5 @@ void Oscillator::FillComboBox()
     oscMenu.addItem("Sine", 1);
     oscMenu.addItem("Square", 2);
     oscMenu.addItem("Saw", 3);
-    oscMenu.setSelectedId(1);
+    // oscMenu.setSelectedId(1);
 }
