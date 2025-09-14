@@ -27,22 +27,28 @@ public:
     // it will return true only if the cast is successful otherwise false.
     return dynamic_cast<SynthSound *>(sound) != nullptr;
   }
-  void setAttack(float attack) {
-    env1.setAttack(static_cast<double>(attack));
+  void setAttack(double attack) {
+    env1.setAttack(attack);
 
   }
 
-  void setDecay(float decay) {
-    env1.setDecay(static_cast<double>(decay));
+  void setDecay(double decay) {
+    env1.setDecay(decay);
   }
 
-  void setSustain(float sustain) {
-    env1.setSustain(static_cast<double>(sustain));
+  void setSustain(double sustain) {
+    env1.setSustain(sustain);
   }
 
-  void setRelease(float release) {
-    env1.setRelease(static_cast<double>(release));
+  void setRelease(double release) {
+    env1.setRelease(release);
   }
+
+  void setCutoffFrequency(double CutoffFreq) {
+    cutoffFrequency = CutoffFreq;
+  }
+
+
 
 
   void startNote(int midiNoteNumber, float velocity, SynthesiserSound *sound,int currentPitchWheelPosition) override {
@@ -70,30 +76,20 @@ public:
 
 
 
+
   }
   void pitchWheelMoved(int newPitchWheelValue) override {}
   void controllerMoved(int controllerNumber, int newControllerValue) override {}
   void renderNextBlock(AudioBuffer<float> &outputBuffer, int startSample, const int numSamples) override {
 
-
-    //2000 ms = 2 seconds
-    // env1.setDecay(500);
-    // env1.setSustain(0.8);
-    // env1.setRelease(2000);
-
     for (int i = 0; i < numSamples; i++) {
 
       // const float theWave = osc1.saw(frequency);
       double theSound = env1.adsr(setOscType(),env1.trigger) * level ;
-
-
-
-      double filteredSound = filter1.lores(theSound,20000,0.1);
-      filteredSound = theSound;
-
+      double filteredSound = filter1.lores(theSound,cutoffFrequency,filterResonance);
 
       for (int channel = 0;channel < outputBuffer.getNumChannels();channel++) {
-        outputBuffer.addSample(channel,startSample,theSound);
+        outputBuffer.addSample(channel,startSample,filteredSound);
       }
       ++startSample;
     }
@@ -102,6 +98,8 @@ public:
   void getOscType(atomic<float> * selection) {
      theWave = *selection;
   }
+
+
 
   double setOscType() {
     if (theWave == 0) {
@@ -122,7 +120,10 @@ private:
   maxiOsc osc1;
   maxiEnv env1;
   maxiFilter filter1;
-  int theWave;
+  int theWave = 0; // default to sine
+  double cutoffFrequency = 1000.0f;
+  double filterResonance = 5.0f;
+
 
   float level = 0.0;
 

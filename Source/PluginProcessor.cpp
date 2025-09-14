@@ -8,25 +8,28 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "juce_audio_processors/processors/juce_AudioProcessor.h"
 
 //==============================================================================
 SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
-     : AudioProcessor (BusesProperties()
-                     #if ! JucePlugin_IsMidiEffect
-                      #if ! JucePlugin_IsSynth
+     : juce::AudioProcessor (BusesProperties()
+#if ! JucePlugin_IsMidiEffect
+#if ! JucePlugin_IsSynth
                        .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
-                      #endif
-                       .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
-                     #endif
-                       ), tree(*this, nullptr, "PARAMETERS", {
-                           std::make_unique<juce::AudioParameterFloat>("attack", "Attack", 0.1f, 5000.0f, 100.0f),
-                           std::make_unique<juce::AudioParameterFloat>("decay", "Decay", 0.1f, 5000.0f, 100.0f),
-                           std::make_unique<juce::AudioParameterFloat>("sustain", "Sustain", 0.1f, 5000.0f, 100.0f),
-                           std::make_unique<juce::AudioParameterFloat>("release", "Release", 0.1f, 5000.0f, 100.0f),
-                           std::make_unique<AudioParameterChoice>("wavetype","WaveType",StringArray { "saw", "square", "saw" },0)
-                        //    std::make_unique<juce::AudioParameterFloat>("frequency", "Frequency", 20.0f, 20000.0f, 440.0f),
-                       })
+#endif
+           .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
+#endif
+       ), tree(*this, nullptr, "PARAMETERS", {
+                   std::make_unique<juce::AudioParameterFloat>("attack", "Attack", 0.1f, 5000.0f, 100.0f),
+                   std::make_unique<juce::AudioParameterFloat>("decay", "Decay", 0.1f, 5000.0f, 100.0f),
+                   std::make_unique<juce::AudioParameterFloat>("sustain", "Sustain", 0.1f, 5000.0f, 100.0f),
+                   std::make_unique<juce::AudioParameterFloat>("release", "Release", 0.1f, 5000.0f, 100.0f),
+                   // Limit cutoff to a safe range well below Nyquist to avoid filter singularities
+                   std::make_unique<juce::AudioParameterFloat>("frequency","Cutoff Frequency",20.0f,10000.0f,1000.0f),
+                   std::make_unique<AudioParameterChoice>("wavetype","WaveType",StringArray { "saw", "square", "saw" },0)
+
+               })
 #endif
 {
     mySynth.clearVoices();
@@ -110,6 +113,8 @@ AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::createP
 
     params.push_back(std::make_unique<AudioParameterFloat>("attack", "Attack", 0.1f, 5000.0f, 100.0f));
     params.push_back(std::make_unique<AudioParameterFloat>("release", "Release", 0.1f, 5000.0f, 100.0f));
+    params.push_back(std::make_unique<AudioParameterFloat>("decay", "Decay", 0.1f, 5000.0f, 100.0f));
+    params.push_back(std::make_unique<AudioParameterFloat>("sustain", "Sustain", 0.1f, 5000.0f, 100.0f));
 
     return { params.begin(), params.end() };
 }
@@ -170,9 +175,6 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     // this code if your algorithm always overwrites all the output channels.
 
 
-    // for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
-    //     buffer.clear (i, 0, buffer.getNumSamples());
-
     for (int i = 0;i<mySynth.getNumVoices();i++) {
         if ((myVoice = dynamic_cast<SynthVoice *>(mySynth.getVoice(i)))) {
             myVoice->setAttack(tree.getRawParameterValue("attack")->load());
@@ -180,6 +182,7 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
             myVoice->setSustain(tree.getRawParameterValue("sustain")->load());
             myVoice->setRelease(tree.getRawParameterValue("release")->load());
             myVoice->getOscType(tree.getRawParameterValue("wavetype"));
+            myVoice->setCutoffFrequency(tree.getRawParameterValue("frequency")->load());
 
         }
     }

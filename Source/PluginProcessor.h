@@ -63,6 +63,7 @@ public:
     float DecayTime;
     float SustainTime;
     float ReleaseTime;
+    float CutoffFrequency;
 
 private:
     //==============================================================================

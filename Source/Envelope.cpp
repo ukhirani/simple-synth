@@ -92,11 +92,11 @@ void Envelope::paint (juce::Graphics& g)
 
 void Envelope::resized()
 {
-    const int sliderWidth = 50;
-    const int sliderHeight = 200;
-    const int startX = 10;
-    const int startY = 10;
-    const int spacing = 20;
+    constexpr int sliderWidth = 50;
+    constexpr int sliderHeight = 200;
+    constexpr int startX = 10;
+    constexpr int startY = 10;
+    constexpr int spacing = 20;
 
     // Set bounds for sliders
     AttackSlider.setBounds(startX, startY, sliderWidth, sliderHeight);
@@ -105,9 +105,9 @@ void Envelope::resized()
     ReleaseSlider.setBounds(startX + (sliderWidth + spacing) * 3, startY, sliderWidth, sliderHeight);
 
     // Set bounds for labels below sliders
-    const int labelY = startY + sliderHeight + 5;
-    const int labelWidth = 20;
-    const int labelHeight = 20;
+    constexpr int labelY = startY + sliderHeight + 5;
+    constexpr int labelWidth = 20;
+    constexpr int labelHeight = 20;
 
     ALabel.setBounds(AttackSlider.getX() + (sliderWidth - labelWidth)/2, labelY, labelWidth, labelHeight);
     DLabel.setBounds(DecaySlider.getX() + (sliderWidth - labelWidth)/2, labelY, labelWidth, labelHeight);
