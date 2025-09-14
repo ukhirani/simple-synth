@@ -59,9 +59,9 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
     addAndMakeVisible(&DecaySlider);
 
     SustainSlider.setSliderStyle(Slider::SliderStyle::LinearBarVertical);
-    SustainSlider.setRange(0.0f, 1.0f);
-    SustainSlider.setTextBoxStyle(Slider::TextBoxBelow, false, 20.0, 20.0);
-    SustainSlider.setValue(0.8f);
+    SustainSlider.setRange(0.1f,5000.0f);
+    SustainSlider.setTextBoxStyle(Slider::TextBoxBelow,false,20.0,20.0);
+    SustainSlider.setValue(100.0f);
     SustainSlider.addListener(this);
     addAndMakeVisible(&SustainSlider);
 
@@ -79,10 +79,7 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
     decayAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "decay", DecaySlider);
     sustainAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "sustain", SustainSlider);
     releaseAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "release", ReleaseSlider);
-    
-    // Connect the oscillator combo box to the wavetype parameter
-    waveTypeAttachment = std::make_unique<AudioProcessorValueTreeState::ComboBoxAttachment>(
-        processor.tree, "wavetype", oscComponent.getOscMenu());
+
 
 
 

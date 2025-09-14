@@ -37,7 +37,6 @@ private:
     std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> decayAttachment;
     std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> sustainAttachment;
     std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> releaseAttachment;
-    std::unique_ptr<AudioProcessorValueTreeState::ComboBoxAttachment> waveTypeAttachment;
     
     Slider AttackSlider;
     Slider DecaySlider;

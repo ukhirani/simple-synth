@@ -19,7 +19,13 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       ), tree(*this, nullptr, "PARAMETERS", createParameterLayout())
+                       ), tree(*this, nullptr, "PARAMETERS", {
+                           std::make_unique<juce::AudioParameterFloat>("attack", "Attack", 0.1f, 5000.0f, 100.0f),
+                           std::make_unique<juce::AudioParameterFloat>("decay", "Decay", 0.1f, 5000.0f, 100.0f),
+                           std::make_unique<juce::AudioParameterFloat>("sustain", "Sustain", 0.1f, 5000.0f, 100.0f),
+                           std::make_unique<juce::AudioParameterFloat>("release", "Release", 0.1f, 5000.0f, 100.0f)
+                        //    std::make_unique<juce::AudioParameterFloat>("frequency", "Frequency", 20.0f, 20000.0f, 440.0f),
+                       })
 #endif
 {
     mySynth.clearVoices();
@@ -101,14 +107,8 @@ AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::createP
 {
     std::vector<std::unique_ptr<RangedAudioParameter>> params;
 
-    // ADSR parameters
     params.push_back(std::make_unique<AudioParameterFloat>("attack", "Attack", 0.1f, 5000.0f, 100.0f));
-    params.push_back(std::make_unique<AudioParameterFloat>("decay", "Decay", 0.1f, 5000.0f, 100.0f));
-    params.push_back(std::make_unique<AudioParameterFloat>("sustain", "Sustain", 0.0f, 1.0f, 0.8f));
     params.push_back(std::make_unique<AudioParameterFloat>("release", "Release", 0.1f, 5000.0f, 100.0f));
-    
-    // Oscillator type parameter (1=Sine, 2=Square, 3=Saw)
-    params.push_back(std::make_unique<AudioParameterInt>("wavetype", "Wave Type", 1, 3, 1));
 
     return { params.begin(), params.end() };
 }
@@ -172,16 +172,13 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     // for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
     //     buffer.clear (i, 0, buffer.getNumSamples());
 
-    for (int i = 0; i < mySynth.getNumVoices(); i++) {
-        if ((myVoice = dynamic_cast<SynthVoice*>(mySynth.getVoice(i)))) {
-            // Set ADSR parameters
+    for (int i = 0;i<mySynth.getNumVoices();i++) {
+        if ((myVoice = dynamic_cast<SynthVoice *>(mySynth.getVoice(i)))) {
             myVoice->setAttack(tree.getRawParameterValue("attack")->load());
             myVoice->setDecay(tree.getRawParameterValue("decay")->load());
             myVoice->setSustain(tree.getRawParameterValue("sustain")->load());
             myVoice->setRelease(tree.getRawParameterValue("release")->load());
-            
-            // Set oscillator type
-            myVoice->setWaveType((int)tree.getRawParameterValue("wavetype")->load());
+
         }
     }
 

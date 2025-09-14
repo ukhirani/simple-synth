@@ -20,10 +20,6 @@ Oscillator::Oscillator()
     setSize (200, 200);
     FillComboBox();
     oscMenu.setJustificationType(Justification::centred);
-    
-    // Make it visible
-    addAndMakeVisible(&oscMenu);
-    oscMenu.addListener(this);
 }
 
 Oscillator::~Oscillator()
@@ -32,30 +28,26 @@ Oscillator::~Oscillator()
 
 void Oscillator::paint (juce::Graphics& g)
 {
-    // Draw a background for the oscillator section
-    g.fillAll(juce::Colours::darkgrey.darker(0.2f));
-    g.setColour(juce::Colours::white);
-    g.drawText("Oscillator", getLocalBounds().reduced(10), juce::Justification::top, true);
+    addAndMakeVisible(&oscMenu);
+    oscMenu.addListener(this);
 }
 
 void Oscillator::comboBoxChanged(juce::ComboBox* comboBox)
 {
     if (comboBox == &oscMenu)
     {
-        // Handle the combo box selection change - handled by parameter attachment
-        // No need for custom logic here
+        // Handle the combo box selection change
+        int selectedId = oscMenu.getSelectedId();
+        std::cout << selectedId <<" "<<oscMenu.getItemText(selectedId-1)<<std::endl;
+
+        // Do something with the selectedId
     }
 }
 
 void Oscillator::resized()
 {
-    Rectangle<int> area = getLocalBounds().reduced(10);
-    
-    // Leave space for the title
-    area.removeFromTop(20);
-    
-    // Place the combobox
-    oscMenu.setBounds(area.removeFromTop(30).reduced(5, 0));
+    Rectangle<int> area = getLocalBounds().reduced(40);
+    oscMenu.setBounds(area.removeFromTop(20));
 }
 
 void Oscillator::FillComboBox()
