@@ -63,11 +63,11 @@ target_sources(SimpleSynth PRIVATE
     ${SYNTH_SOURCES}
 )
 
+
 target_sources(SimpleSynth PRIVATE
-    Source/Oscillator.cpp
-)
-target_sources(SimpleSynth PRIVATE
+        Source/Oscillator.cpp
         Source/Envelope.cpp
+        Source/Filter.cpp
 )
 
 target_link_libraries(SimpleSynth PRIVATE

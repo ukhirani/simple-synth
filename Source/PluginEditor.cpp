@@ -11,7 +11,7 @@
 
 //==============================================================================
 SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAudioProcessor& p)
-    : AudioProcessorEditor (&p), processor (p), oscComponent(p), envComponent(p)
+    : AudioProcessorEditor (&p), processor (p), oscComponent(p), envComponent(p), filterComponent(p)
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
@@ -20,6 +20,7 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
     setResizable(true,true);
     addAndMakeVisible(&envComponent);
     addAndMakeVisible(&oscComponent);
+    addAndMakeVisible(&filterComponent);
 
     
 
@@ -32,17 +33,11 @@ SimpleSynthAudioProcessorEditor::~SimpleSynthAudioProcessorEditor()
 
 //==============================================================================
 void SimpleSynthAudioProcessorEditor::paint (juce::Graphics& g) {
-    // Fill background
-    g.fillAll (juce::Colours::white);
-    
-    // Set default text color to black for all text elements
-    g.setColour (juce::Colours::black);
-    
-    // Set default font
-    g.setFont (juce::FontOptions (15.0f));
-    
 
-    // Set label colors
+    g.fillAll (juce::Colours::white);
+    g.setColour (juce::Colours::black);
+    g.setFont (juce::FontOptions (15.0f));
+
 }
 
 void SimpleSynthAudioProcessorEditor::resized()
@@ -54,6 +49,7 @@ void SimpleSynthAudioProcessorEditor::resized()
 
     oscComponent.setBounds(area.removeFromLeft(componentWidth).removeFromTop(componentHeight));
     envComponent.setBounds(area.removeFromLeft(componentWidth).removeFromTop(componentHeight));
+    filterComponent.setBounds(area.removeFromLeft(componentWidth).removeFromTop(componentHeight));
 
 
 }

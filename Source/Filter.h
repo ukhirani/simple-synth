@@ -1,8 +1,8 @@
 /*
   ==============================================================================
 
-    Oscillator.h
-    Created: 7 Sep 2025 9:34:46am
+    Filter.h
+    Created: 14 Sep 2025 6:44:52pm
     Author:  ukhirani
 
   ==============================================================================
@@ -16,23 +16,27 @@
 //==============================================================================
 /*
 */
-class Oscillator  : public juce::Component,
-                    public juce::ComboBox::Listener
+class Filter  : public juce::Component,
+                public Slider::Listener
 {
 public:
-    Oscillator(SimpleSynthAudioProcessor&);
-    ~Oscillator() override;
-
-    void comboBoxChanged(juce::ComboBox* comboBox) override;
+    Filter(SimpleSynthAudioProcessor&);
+    ~Filter() override;
 
     void paint (juce::Graphics&) override;
     void resized() override;
-    void FillComboBox();
+    void sliderValueChanged(Slider *) override;
 
 private:
-    ComboBox oscMenu;
-    SimpleSynthAudioProcessor& processor;
-    std::unique_ptr<AudioProcessorValueTreeState::ComboBoxAttachment> waveSelection;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Oscillator)
+    std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> FrequencyAttachment;
+
+
+    Slider FrequencySlider;
+    Label FrequencyLabel;
+
+    SimpleSynthAudioProcessor& processor;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Filter)
+
+
 };

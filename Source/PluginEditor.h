@@ -12,6 +12,7 @@
 #include "PluginProcessor.h"
 #include "Oscillator.h"
 #include "Envelope.h"
+#include "Filter.h"
 
 //==============================================================================
 /**
@@ -34,6 +35,7 @@ private:
     SimpleSynthAudioProcessor& processor;
     Oscillator oscComponent;
     Envelope envComponent;
+    Filter filterComponent;
     
 
 
