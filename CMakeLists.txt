@@ -27,6 +27,16 @@ juce_add_plugin(SimpleSynth
         PLUGIN_CODE SIMP
         FORMATS VST3 Standalone
         PRODUCT_NAME "SimpleSynth"
+
+        IS_SYNTH TRUE
+        NEEDS_MIDI_INPUT TRUE
+        NEEDS_MIDI_OUTPUT FALSE
+        EDITOR_WANTS_KEYBOARD_FOCUS FALSE
+        VST3_CATEGORIES "Instrument"
+
+
+
+
         # Add more options as needed
 )
 
@@ -37,6 +47,11 @@ juce_generate_juce_header(SimpleSynth)
 #        Source/PluginProcessor.cpp
 #        Source/PluginEditor.cpp
 #)
+
+
+target_compile_definitions(SimpleSynth PRIVATE
+        JUCE_VST3_CAN_REPLACE_VST2=0
+)
 
 
 # Collect all .cpp files from the 'Source' directory

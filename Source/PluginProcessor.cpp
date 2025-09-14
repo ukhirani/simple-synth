@@ -8,7 +8,6 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-#include "juce_audio_processors/processors/juce_AudioProcessor.h"
 
 //==============================================================================
 SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
