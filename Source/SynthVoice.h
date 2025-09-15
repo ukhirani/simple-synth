@@ -86,7 +86,7 @@ public:
 
       // const float theWave = osc1.saw(frequency);
       double theSound = env1.adsr(setOscType(),env1.trigger) * level ;
-      double filteredSound = filter1.lopass(theSound,cutoffFrequency);
+      double filteredSound = filter1.lores(theSound,cutoffFrequency,filterResonance);
 
       for (int channel = 0;channel < outputBuffer.getNumChannels();channel++) {
         outputBuffer.addSample(channel,startSample,filteredSound);

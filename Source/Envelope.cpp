@@ -95,8 +95,8 @@ void Envelope::resized()
     constexpr int sliderWidth = 50;
     constexpr int sliderHeight = 200;
     constexpr int startX = 10;
-    constexpr int startY = 10;
-    constexpr int spacing = 20;
+    constexpr int startY = 0;
+    constexpr int spacing = 10;
 
     // Set bounds for sliders
     AttackSlider.setBounds(startX, startY, sliderWidth, sliderHeight);
