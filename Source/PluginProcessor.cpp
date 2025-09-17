@@ -123,9 +123,12 @@ void SimpleSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need.
-    ignoreUnused(sampleRate);
+    ignoreUnused(samplesPerBlock);
     lastSampleRate = sampleRate;
     mySynth.setCurrentPlaybackSampleRate(lastSampleRate);
+    
+    // Set the sample rate for the Maximilian DSP library
+    maxiSettings::sampleRate = sampleRate;
 }
 
 void SimpleSynthAudioProcessor::releaseResources()
@@ -166,38 +169,36 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
-    // In case we have more outputs than inputs, this code clears any output
-    // channels that didn't contain input data, (because these aren't
-    // guaranteed to be empty - they may contain garbage).
-    // This is here to avoid people getting screaming feedback
-    // when they first compile a plugin, but obviously you don't need to keep
-    // this code if your algorithm always overwrites all the output channels.
-
-
-    for (int i = 0;i<mySynth.getNumVoices();i++) {
-        if ((myVoice = dynamic_cast<SynthVoice *>(mySynth.getVoice(i)))) {
+    for (int i = 0; i < mySynth.getNumVoices(); i++) {
+        if ((myVoice = dynamic_cast<SynthVoice*>(mySynth.getVoice(i)))) {
             myVoice->setAttack(tree.getRawParameterValue("attack")->load());
             myVoice->setDecay(tree.getRawParameterValue("decay")->load());
             myVoice->setSustain(tree.getRawParameterValue("sustain")->load());
             myVoice->setRelease(tree.getRawParameterValue("release")->load());
             myVoice->getOscType(tree.getRawParameterValue("wavetype"));
             myVoice->setCutoffFrequency(tree.getRawParameterValue("frequency")->load());
-
         }
     }
 
+    // Clear the buffer and process audio
     buffer.clear();
-    mySynth.renderNextBlock(buffer,midiMessages,0,buffer.getNumSamples());
+    mySynth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
 
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-
-
-
+    // Send audio data to the visualizer if the editor is open
+    if (auto* editor = dynamic_cast<SimpleSynthAudioProcessorEditor*>(getActiveEditor()))
+    {
+        // Only send every 4th sample to reduce CPU usage
+        const int downsampleFactor = 4;
+        for (int sample = 0; sample < buffer.getNumSamples(); sample += downsampleFactor)
+        {
+            // Send the left channel or mono sum if multiple channels
+            float sampleValue = buffer.getSample(0, sample);
+            if (totalNumOutputChannels > 1) {
+                sampleValue = (sampleValue + buffer.getSample(1, sample)) * 0.5f;
+            }
+            editor->pushNextSample(sampleValue);
+        }
+    }
 }
 
 //==============================================================================

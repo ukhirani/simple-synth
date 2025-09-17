@@ -13,6 +13,7 @@
 #include "Oscillator.h"
 #include "Envelope.h"
 #include "Filter.h"
+#include <juce_audio_basics/juce_audio_basics.h>
 
 //==============================================================================
 /**
@@ -28,6 +29,10 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
 
+    // Method to push audio samples to the visualizer
+    void pushNextSample(float sample) {
+        visualiserComponent.pushSample(&sample, 1);
+    }
 
 private:
     // This reference is provided as a quick way for your editor to
@@ -36,6 +41,7 @@ private:
     Oscillator oscComponent;
     Envelope envComponent;
     Filter filterComponent;
+    AudioVisualiserComponent visualiserComponent;
     
 
 

@@ -11,20 +11,27 @@
 
 //==============================================================================
 SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAudioProcessor& p)
-    : AudioProcessorEditor (&p), processor (p), oscComponent(p), envComponent(p), filterComponent(p)
+    : AudioProcessorEditor (&p), 
+      processor (p), 
+      oscComponent(p), 
+      envComponent(p), 
+      filterComponent(p), 
+      visualiserComponent(1)  // 1 channel visualizer
 {
-    // Make sure that before the constructor has finished, you've set the
-    // editor's size to whatever you need it to be.
+    // Set the editor's size
     setSize (1000, 700);
-
-    setResizable(true,true);
+    setResizable(true, true);
+    
+    // Add and make visible all components
     addAndMakeVisible(&envComponent);
     addAndMakeVisible(&oscComponent);
     addAndMakeVisible(&filterComponent);
-
     
-
-
+    // Configure visualizer
+    addAndMakeVisible(&visualiserComponent);
+    visualiserComponent.setBufferSize(64);
+    visualiserComponent.setSamplesPerBlock(4);
+    visualiserComponent.setRepaintRate(60);
 }
 
 SimpleSynthAudioProcessorEditor::~SimpleSynthAudioProcessorEditor()
@@ -52,7 +59,8 @@ void SimpleSynthAudioProcessorEditor::resized()
 
     oscComponent.setBounds(oscArea.removeFromTop(40));
     envComponent.setBounds(oscArea);
-    filterComponent.setBounds(oscArea.getRight(),40 ,100 ,240 );
+    filterComponent.setBounds(oscArea.getRight(),40 ,60 ,240 );
+    visualiserComponent.setBounds(filterComponent.getRight(),10 ,500 ,230);
 
 
 }

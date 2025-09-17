@@ -9,7 +9,6 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "SynthSound.h"
 #include "SynthVoice.h"
 #include "../MaximilianDSP/maximilian.h"
 
