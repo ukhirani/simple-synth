@@ -13,6 +13,7 @@
 #include "Oscillator.h"
 #include "Envelope.h"
 #include "Filter.h"
+#include "ReverbComponent.h"
 #include <juce_audio_basics/juce_audio_basics.h>
 
 //==============================================================================
@@ -42,6 +43,8 @@ private:
     Envelope envComponent;
     Filter filterComponent;
     AudioVisualiserComponent visualiserComponent;
+    ReverbComponent reverbComponent;
+
     
 
 

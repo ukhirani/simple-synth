@@ -26,6 +26,12 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
                    std::make_unique<juce::AudioParameterFloat>("release", "Release", 0.1f, 5000.0f, 100.0f),
                    // Limit cutoff to a safe range well below Nyquist to avoid filter singularities
                    std::make_unique<juce::AudioParameterFloat>("frequency","Cutoff Frequency",20.0f,10000.0f,1000.0f),
+
+                   // Reverb Component's processor tree state values
+                   std::make_unique<juce::AudioParameterFloat>("reverbWet","Reverb Wet",0.0f,1.0f,0.3f),
+
+
+
                    std::make_unique<AudioParameterChoice>("wavetype","WaveType",StringArray { "saw", "square", "saw" },0)
 
                })
@@ -114,6 +120,7 @@ AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::createP
     params.push_back(std::make_unique<AudioParameterFloat>("release", "Release", 0.1f, 5000.0f, 100.0f));
     params.push_back(std::make_unique<AudioParameterFloat>("decay", "Decay", 0.1f, 5000.0f, 100.0f));
     params.push_back(std::make_unique<AudioParameterFloat>("sustain", "Sustain", 0.1f, 5000.0f, 100.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("reverbWet","Reverb Wet",0.0f,1.0f,0.3f));
 
     return { params.begin(), params.end() };
 }
@@ -177,6 +184,7 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
             myVoice->setRelease(tree.getRawParameterValue("release")->load());
             myVoice->getOscType(tree.getRawParameterValue("wavetype"));
             myVoice->setCutoffFrequency(tree.getRawParameterValue("frequency")->load());
+            myVoice->setReverbWet(tree.getRawParameterValue("reverbWet")->load());
             myVoice->setCurrSampleRate(getSampleRate());
         }
     }

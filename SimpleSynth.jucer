@@ -15,6 +15,10 @@
       <FILE id="rHxC7C" name="Oscillator.cpp" compile="1" resource="0" file="Source/Oscillator.cpp"/>
       <FILE id="HYAdng" name="Filter.cpp" compile="1" resource="0" file="Source/Filter.cpp"/>
       <FILE id="PCROtq" name="Filter.h" compile="0" resource="0" file="Source/Filter.h"/>
+      <FILE id="RtOBsD" name="ReverbComponent.cpp" compile="1" resource="0"
+            file="Source/ReverbComponent.cpp"/>
+      <FILE id="kN4Lyq" name="ReverbComponent.h" compile="0" resource="0"
+            file="Source/ReverbComponent.h"/>
       <FILE id="XbnvBU" name="Oscillator.h" compile="0" resource="0" file="Source/Oscillator.h"/>
       <FILE id="FlSEQF" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>

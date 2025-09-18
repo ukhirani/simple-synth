@@ -68,6 +68,11 @@ public:
     // confirmed that this function is reacting to the sample rate change
   }
 
+  void setReverbWet(double wet1) {
+    reverb1.wet = wet1;
+  }
+
+
 
 
 
@@ -143,8 +148,22 @@ private:
   double frequency = 440.0f;
 
   maxiOsc osc1;
+  int theWave = 0; // default to sine
+
+
+
+
   maxiEnv env1;
+
+
   maxiFilter filter1;
+  double cutoffFrequency = 1000.0f;
+  double filterResonance = 5.0f;
+  double currSampleRate = 44100.0;
+
+
+  float level = 0.0;
+
 
   //================================================here goes all the signalsmith's stuff ===========================================================
 
@@ -153,14 +172,15 @@ private:
 
 
 
-  int theWave = 0; // default to sine
-  double cutoffFrequency = 1000.0f;
-  double filterResonance = 5.0f;
-  double currSampleRate = 44100.0;
 
 
 
 
-  float level = 0.0;
+
+
+
+
+
+
 
 };

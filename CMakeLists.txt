@@ -8,6 +8,18 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_subdirectory("/home/ukhirani/Umang/SDKs and Paths/juce-8.0.8-linux/JUCE" JUCE)
 
 
+if(MSVC)
+    # Disable specific warnings for MSVC
+    add_compile_options(/W0)  # Disable all warnings
+    # OR for specific warnings: /wd#### (replace #### with warning number)
+else()
+    # For GCC/Clang
+    add_compile_options(-w)  # Disable all warnings
+    # OR for specific warnings: -Wno-xxxx (e.g., -Wno-unused-variable)
+endif()
+
+
+
 # Use pkg-config to find GTK and Pango (and their dependencies)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
@@ -72,6 +84,7 @@ target_sources(SimpleSynth PRIVATE
         Source/Oscillator.cpp
         Source/Envelope.cpp
         Source/Filter.cpp
+        Source/ReverbComponent.cpp
 )
 
 target_link_libraries(SimpleSynth PRIVATE

@@ -15,7 +15,8 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
       processor (p), 
       oscComponent(p), 
       envComponent(p), 
-      filterComponent(p), 
+      filterComponent(p),
+      reverbComponent(p),
       visualiserComponent(1)  // 1 channel visualizer
 {
     // Set the editor's size
@@ -26,12 +27,16 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
     addAndMakeVisible(&envComponent);
     addAndMakeVisible(&oscComponent);
     addAndMakeVisible(&filterComponent);
+    addAndMakeVisible(&visualiserComponent);
+    addAndMakeVisible(&reverbComponent);
+
     
     // Configure visualizer
-    addAndMakeVisible(&visualiserComponent);
     visualiserComponent.setBufferSize(64);
     visualiserComponent.setSamplesPerBlock(4);
     visualiserComponent.setRepaintRate(60);
+
+    //
 }
 
 SimpleSynthAudioProcessorEditor::~SimpleSynthAudioProcessorEditor()
@@ -61,6 +66,7 @@ void SimpleSynthAudioProcessorEditor::resized()
     envComponent.setBounds(oscArea);
     filterComponent.setBounds(oscArea.getRight(),40 ,60 ,240 );
     visualiserComponent.setBounds(filterComponent.getRight(),10 ,500 ,230);
+    reverbComponent.setBounds(0,oscComponent.getBottom() + 250,500,500);
 
 
 }

@@ -4,5 +4,8 @@
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/ReferenceCodes/juceSynthFramework" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/basics" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/basics/modules/dsp" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/basics/modules/hilbert-iir" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/basics/modules/linear" vcs="Git" />
   </component>
 </project>
