@@ -30,6 +30,8 @@ public:
 
     // reverb1.highCutHz = 8000.f;
     reverb1.configure(currSampleRate,512);
+    reverb1.wet = 0.2;
+
 
 
 
@@ -76,7 +78,7 @@ public:
     env1.trigger = 1;
 
     //velocity will be ranging from 0.0 to 1.0 so that is the float value that we are multiplying with the sound source's amplitude
-    level = velocity;
+    level = velocity*(0.5);
 
 
     //find the equivalent frequency for the note that is being played
@@ -95,17 +97,26 @@ public:
   void pitchWheelMoved(int newPitchWheelValue) override {}
   void controllerMoved(int controllerNumber, int newControllerValue) override {}
   void renderNextBlock(AudioBuffer<float> &outputBuffer, int startSample, const int numSamples) override {
+    // Get write pointers for the entire buffer
 
+    // First, generate all the samples
     for (int i = 0; i < numSamples; i++) {
+      double theSound = env1.adsr(setOscType(), env1.trigger) * level;
+      double filteredSound = filter1.lores(theSound, cutoffFrequency, filterResonance);
 
-      // const float theWave = osc1.saw(frequency);
-      double theSound = env1.adsr(setOscType(),env1.trigger) * level ;
-      double filteredSound = filter1.lores(theSound,cutoffFrequency,filterResonance);
-
-      for (int channel = 0;channel < outputBuffer.getNumChannels();channel++) {
-        outputBuffer.addSample(channel,startSample,filteredSound);
+      // Write to all channels
+      for (int channel = 0; channel < outputBuffer.getNumChannels(); channel++) {
+        outputBuffer.addSample(channel, startSample + i, theSound);
       }
-      ++startSample;
+    }
+
+    // Apply reverb to the entire block after all samples are generated
+    if (outputBuffer.getNumChannels() >= 2) {
+      float* channels[2] = {
+        outputBuffer.getWritePointer(0, startSample),
+        outputBuffer.getWritePointer(1, startSample)
+    };
+      reverb1.process(channels, numSamples);
     }
   }
 
