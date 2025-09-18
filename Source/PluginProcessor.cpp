@@ -29,6 +29,11 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
 
                    // Reverb Component's processor tree state values
                    std::make_unique<juce::AudioParameterFloat>("reverbWet","Reverb Wet",0.0f,1.0f,0.3f),
+                   std::make_unique<juce::AudioParameterFloat>("reverbDry","Reverb Dry",0.0f,1.0f,1.0f),
+                   std::make_unique<juce::AudioParameterFloat>("roomMs","Room Ms",0.1f,10000.0f,500.0f),
+                   std::make_unique<juce::AudioParameterFloat>("lowCutoffFrequency","Low Cutoff Frequency",20.0f,10000.0f,200.0f),
+                   std::make_unique<juce::AudioParameterFloat>("highCutoffFrequency","High Cutoff Frequency",20.0f,10000.0f,2000.0f),
+                   std::make_unique<juce::AudioParameterFloat>("rt20","RT20",0.0f,10000.0f,0.0f),
 
 
 
@@ -121,6 +126,11 @@ AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::createP
     params.push_back(std::make_unique<AudioParameterFloat>("decay", "Decay", 0.1f, 5000.0f, 100.0f));
     params.push_back(std::make_unique<AudioParameterFloat>("sustain", "Sustain", 0.1f, 5000.0f, 100.0f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("reverbWet","Reverb Wet",0.0f,1.0f,0.3f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("reverbDry","Reverb Dry",0.0f,1.0f,1.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("roomMs","Room Ms",0.1f,10000.0f,500.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("lowCutoffFrequency","Low Cutoff Frequency",20.0f,10000.0f,200.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("highCutoffFrequency","High Cutoff Frequency",20.0f,10000.0f,2000.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("rt20","RT20",0.1f,10000.0f,0.0f));
 
     return { params.begin(), params.end() };
 }
@@ -185,6 +195,12 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
             myVoice->getOscType(tree.getRawParameterValue("wavetype"));
             myVoice->setCutoffFrequency(tree.getRawParameterValue("frequency")->load());
             myVoice->setReverbWet(tree.getRawParameterValue("reverbWet")->load());
+            myVoice->setReverbDry(tree.getRawParameterValue("reverbDry")->load());
+            myVoice->setRoomMs(tree.getRawParameterValue("roomMs")->load());
+            myVoice->setLowCutoffFrequency(tree.getRawParameterValue("lowCutoffFrequency")->load());
+            myVoice->setHighCutoffFrequency(tree.getRawParameterValue("highCutoffFrequency")->load());
+            myVoice->setRT20(tree.getRawParameterValue("rt20")->load());
+
             myVoice->setCurrSampleRate(getSampleRate());
         }
     }

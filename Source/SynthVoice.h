@@ -70,6 +70,27 @@ public:
 
   void setReverbWet(double wet1) {
     reverb1.wet = wet1;
+
+  }
+
+  void setReverbDry(double dry1) {
+    reverb1.dry = dry1;
+  }
+
+  void setRoomMs(double roomMs1) {
+    reverb1.roomMs = roomMs1;
+  }
+
+  void setLowCutoffFrequency(double lowCutoffFrequency1) {
+    reverb1.lowCutHz = lowCutoffFrequency1;
+  }
+
+  void setHighCutoffFrequency(double highCutoffFrequency1) {
+    reverb1.highCutHz = highCutoffFrequency1;
+  }
+
+  void setRT20(double rt201) {
+    reverb1.rt20 = rt201;
   }
 
 

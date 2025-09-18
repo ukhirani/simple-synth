@@ -55,7 +55,7 @@ void SimpleSynthAudioProcessorEditor::paint (juce::Graphics& g) {
 void SimpleSynthAudioProcessorEditor::resized()
 {
     Rectangle<int> area = getLocalBounds();
-    Rectangle<int> oscArea = area.removeFromTop(300).removeFromLeft(250);
+    Rectangle<int> oscArea = area.removeFromTop(280).removeFromLeft(250);
     
 
     constexpr int componentWidth = 400;
@@ -66,7 +66,9 @@ void SimpleSynthAudioProcessorEditor::resized()
     envComponent.setBounds(oscArea);
     filterComponent.setBounds(oscArea.getRight(),40 ,60 ,240 );
     visualiserComponent.setBounds(filterComponent.getRight(),10 ,500 ,230);
-    reverbComponent.setBounds(0,oscComponent.getBottom() + 250,500,500);
+    reverbComponent.setBounds(0,oscComponent.getBottom() + 230,400,700);
+
+
 
 
 }
