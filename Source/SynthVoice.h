@@ -12,6 +12,9 @@
 #include "JuceHeader.h"
 #include "SynthSound.h"
 #include "../MaximilianDSP/maximilian.h"
+#include "../basics/include/signalsmith-basics/reverb.h"
+// #include "../basics/include/signalsmith-basics/chorus.h"
+
 
 class SynthVoice : public SynthesiserVoice {
 public:
@@ -22,6 +25,14 @@ public:
     env1.setSustain(0.8);
     env1.setRelease(2000.0);
     env1.trigger = 0;
+
+    //now initialzing the signalsmith's reverb
+
+    // reverb1.highCutHz = 8000.f;
+    reverb1.configure(currSampleRate,512);
+
+
+
   }
   bool canPlaySound(SynthesiserSound *sound) override {
     // it will return true only if the cast is successful otherwise false.
@@ -48,6 +59,15 @@ public:
     cutoffFrequency = CutoffFreq;
   }
 
+  void setCurrSampleRate(double rate) {
+    currSampleRate = rate;
+    // this cout was for debugging purpose
+    // cout<<currSampleRate<<endl;
+    // confirmed that this function is reacting to the sample rate change
+  }
+
+
+
 
 
 
@@ -71,12 +91,6 @@ public:
     if (velocity == 0) {
       clearCurrentNote();
     }
-
-
-
-
-
-
   }
   void pitchWheelMoved(int newPitchWheelValue) override {}
   void controllerMoved(int controllerNumber, int newControllerValue) override {}
@@ -120,9 +134,20 @@ private:
   maxiOsc osc1;
   maxiEnv env1;
   maxiFilter filter1;
+
+  //================================================here goes all the signalsmith's stuff ===========================================================
+
+  signalsmith::basics::ReverbFloat reverb1;
+
+
+
+
   int theWave = 0; // default to sine
   double cutoffFrequency = 1000.0f;
   double filterResonance = 5.0f;
+  double currSampleRate = 44100.0;
+
+
 
 
   float level = 0.0;

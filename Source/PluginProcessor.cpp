@@ -177,6 +177,7 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
             myVoice->setRelease(tree.getRawParameterValue("release")->load());
             myVoice->getOscType(tree.getRawParameterValue("wavetype"));
             myVoice->setCutoffFrequency(tree.getRawParameterValue("frequency")->load());
+            myVoice->setCurrSampleRate(getSampleRate());
         }
     }
 
