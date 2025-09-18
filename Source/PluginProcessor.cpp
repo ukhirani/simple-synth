@@ -121,14 +121,18 @@ AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::createP
 //==============================================================================
 void SimpleSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need.
-    ignoreUnused(samplesPerBlock);
+    // Set up the synth with the current sample rate
     lastSampleRate = sampleRate;
     mySynth.setCurrentPlaybackSampleRate(lastSampleRate);
     
-    // Set the sample rate for the Maximilian DSP library
-    maxiSettings::sampleRate = sampleRate;
+    // Initialize each voice with the sample rate
+    for (int i = 0; i < mySynth.getNumVoices(); ++i)
+    {
+        if (auto* voice = dynamic_cast<SynthVoice*>(mySynth.getVoice(i)))
+        {
+            voice->prepareToPlay(sampleRate, samplesPerBlock, getTotalNumOutputChannels());
+        }
+    }
 }
 
 void SimpleSynthAudioProcessor::releaseResources()
@@ -169,14 +173,22 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
-    for (int i = 0; i < mySynth.getNumVoices(); i++) {
-        if ((myVoice = dynamic_cast<SynthVoice*>(mySynth.getVoice(i)))) {
-            myVoice->setAttack(tree.getRawParameterValue("attack")->load());
-            myVoice->setDecay(tree.getRawParameterValue("decay")->load());
-            myVoice->setSustain(tree.getRawParameterValue("sustain")->load());
-            myVoice->setRelease(tree.getRawParameterValue("release")->load());
-            myVoice->getOscType(tree.getRawParameterValue("wavetype"));
-            myVoice->setCutoffFrequency(tree.getRawParameterValue("frequency")->load());
+    // Update parameters for each voice
+    for (int i = 0; i < mySynth.getNumVoices(); ++i)
+    {
+        if (auto* voice = dynamic_cast<SynthVoice*>(mySynth.getVoice(i)))
+        {
+            // Update envelope parameters
+            voice->setAttack(*tree.getRawParameterValue("attack"));
+            voice->setDecay(*tree.getRawParameterValue("decay"));
+            voice->setSustain(*tree.getRawParameterValue("sustain"));
+            voice->setRelease(*tree.getRawParameterValue("release"));
+            
+            // Update oscillator type
+            voice->getOscType(tree.getRawParameterValue("wavetype"));
+            
+            // Update filter cutoff
+            voice->setCutoffFrequency(*tree.getRawParameterValue("frequency"));
         }
     }
 
