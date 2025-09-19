@@ -13,7 +13,7 @@
 #include "SynthSound.h"
 #include "../MaximilianDSP/maximilian.h"
 #include "../basics/include/signalsmith-basics/reverb.h"
-// #include "../basics/include/signalsmith-basics/chorus.h"
+#include "../basics/include/signalsmith-basics/crunch.h"
 
 
 class SynthVoice : public SynthesiserVoice {
@@ -28,9 +28,19 @@ public:
 
     //now initialzing the signalsmith's reverb
 
-    // reverb1.highCutHz = 8000.f;
-    reverb1.configure(currSampleRate,512);
+    reverb1.configure(currSampleRate,currBlockSize);
     reverb1.wet = 0.2;
+
+    //now initializing the signalsmith's crunch (distortion)
+    crunch1.configure(currSampleRate,currBlockSize);
+    crunch1.fuzz = 0.1;
+    crunch1.drive = 4;
+    crunch1.fuzz = 0.5;
+    // ParamRange drive{4};//stfx::units::dbToGain(autoGain ? 24 : 12)};
+    // ParamRange fuzz{0};
+    // ParamRange toneHz{2000};
+    // ParamRange cutHz{50};
+    // ParamRange outGain{1};
 
 
 
@@ -94,11 +104,6 @@ public:
   }
 
 
-
-
-
-
-
   void startNote(int midiNoteNumber, float velocity, SynthesiserSound *sound,int currentPitchWheelPosition) override {
 
     env1.trigger = 1;
@@ -123,7 +128,6 @@ public:
   void pitchWheelMoved(int newPitchWheelValue) override {}
   void controllerMoved(int controllerNumber, int newControllerValue) override {}
   void renderNextBlock(AudioBuffer<float> &outputBuffer, int startSample, const int numSamples) override {
-    // Get write pointers for the entire buffer
 
     // First, generate all the samples
     for (int i = 0; i < numSamples; i++) {
@@ -137,17 +141,21 @@ public:
     }
 
     // Apply reverb to the entire block after all samples are generated
-    if (outputBuffer.getNumChannels() >= 2) {
       float* channels[2] = {
         outputBuffer.getWritePointer(0, startSample),
         outputBuffer.getWritePointer(1, startSample)
     };
+
+      crunch1.process(channels, numSamples);
       reverb1.process(channels, numSamples);
-    }
   }
 
   void getOscType(atomic<float> * selection) {
      theWave = *selection;
+  }
+
+  void setBlockSize(int blocksize) {
+    currBlockSize = blocksize;
   }
 
 
@@ -165,7 +173,7 @@ public:
     return osc1.sinewave(frequency);
   }
 
-private:
+
   double frequency = 440.0f;
 
   maxiOsc osc1;
@@ -181,6 +189,7 @@ private:
   double cutoffFrequency = 1000.0f;
   double filterResonance = 5.0f;
   double currSampleRate = 44100.0;
+  int currBlockSize;
 
 
   float level = 0.0;
@@ -189,19 +198,7 @@ private:
   //================================================here goes all the signalsmith's stuff ===========================================================
 
   signalsmith::basics::ReverbFloat reverb1;
-
-
-
-
-
-
-
-
-
-
-
-
-
+  signalsmith::basics::CrunchFloat crunch1;
 
 
 };
