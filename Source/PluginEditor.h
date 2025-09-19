@@ -9,6 +9,8 @@
 #pragma once
 
 #include <JuceHeader.h>
+
+#include "Chorus.h"
 #include "PluginProcessor.h"
 #include "Oscillator.h"
 #include "Envelope.h"
@@ -45,6 +47,7 @@ private:
     AudioVisualiserComponent visualiserComponent;
     ReverbComponent reverbComponent;
     CrunchComponent crunchComponent;
+    ChorusComponent chorusComponent;
 
     
 
