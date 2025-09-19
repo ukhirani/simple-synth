@@ -9,6 +9,7 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+
 //==============================================================================
 SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -138,13 +139,17 @@ AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::createP
 //==============================================================================
 void SimpleSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need.
-    ignoreUnused(samplesPerBlock);
+    ignoreUnused(sampleRate);
     lastSampleRate = sampleRate;
     mySynth.setCurrentPlaybackSampleRate(lastSampleRate);
-    
-    // Set the sample rate for the Maximilian DSP library
+
+    for (int i = 0; i < mySynth.getNumVoices(); i++) {
+        if ((myVoice = dynamic_cast<SynthVoice*>(mySynth.getVoice(i)))) {
+           myVoice->reverb1.configure(lastSampleRate,samplesPerBlock);
+           myVoice->crunch1.configure(lastSampleRate,samplesPerBlock);
+        }
+    }
+
     maxiSettings::sampleRate = sampleRate;
 }
 
@@ -200,7 +205,7 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
             myVoice->setLowCutoffFrequency(tree.getRawParameterValue("lowCutoffFrequency")->load());
             myVoice->setHighCutoffFrequency(tree.getRawParameterValue("highCutoffFrequency")->load());
             myVoice->setRT20(tree.getRawParameterValue("rt20")->load());
-
+            myVoice->setBlockSize(getBlockSize());
             myVoice->setCurrSampleRate(getSampleRate());
         }
     }
