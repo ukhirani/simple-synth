@@ -164,9 +164,9 @@ public:
         outputBuffer.getWritePointer(1, startSample)
     };
 
-      crunch1.process(channels, numSamples);
+      // crunch1.process(channels, numSamples);
       chorus1.process(channels,numSamples);
-      reverb1.process(channels, numSamples);
+      // reverb1.process(channels, numSamples);
 
   }
 

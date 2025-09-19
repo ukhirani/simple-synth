@@ -49,15 +49,6 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
                    std::make_unique<juce::AudioParameterFloat>("chorusDetune","Chorus Detune",1.0f,50.0f,8.0f),
                    std::make_unique<juce::AudioParameterFloat>("chorusStereo","Chorus Stereo",0.0f,1.5f,0.5f),
 
-
-
-
-
-
-
-
-
-
                    std::make_unique<AudioParameterChoice>("wavetype","WaveType",StringArray { "saw", "square", "saw" },0)
 
                })
@@ -244,6 +235,12 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
             myVoice->setToneHz(tree.getRawParameterValue("tonehz")->load());
             myVoice->setCutHz(tree.getRawParameterValue("cuthz")->load());
             myVoice->setOutGain(tree.getRawParameterValue("outgain")->load());
+            
+            // Set chorus parameters
+            myVoice->setChorusMix(tree.getRawParameterValue("chorusMix")->load());
+            myVoice->setChorusDepth(tree.getRawParameterValue("chorusDepth")->load());
+            myVoice->setChorusDetune(tree.getRawParameterValue("chorusDetune")->load());
+            myVoice->setChorusStereo(tree.getRawParameterValue("chorusStereo")->load());
         }
     }
 

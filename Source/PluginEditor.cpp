@@ -40,7 +40,7 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
     visualiserComponent.setSamplesPerBlock(4);
     visualiserComponent.setRepaintRate(60);
 
-    //
+    //h
 }
 
 SimpleSynthAudioProcessorEditor::~SimpleSynthAudioProcessorEditor()
