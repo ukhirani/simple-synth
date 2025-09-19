@@ -28,11 +28,11 @@ public:
 
     //now initialzing the signalsmith's reverb
 
-    reverb1.configure(currSampleRate,currBlockSize);
+    // reverb1.configure(currSampleRate,currBlockSize);
     reverb1.wet = 0.2;
 
     //now initializing the signalsmith's crunch (distortion)
-    crunch1.configure(currSampleRate,currBlockSize);
+    // crunch1.configure(currSampleRate,currBlockSize);
     crunch1.fuzz = 0.1;
     crunch1.drive = 4;
     crunch1.fuzz = 0.5;
@@ -156,6 +156,26 @@ public:
 
   void setBlockSize(int blocksize) {
     currBlockSize = blocksize;
+  }
+
+  void setFuzz(double fuzz1) {
+    crunch1.fuzz = fuzz1;
+  }
+
+  void setDrive(double drive1) {
+    crunch1.drive = drive1;
+  }
+
+  void setToneHz(double toneHz1) {
+    crunch1.toneHz = toneHz1;
+  }
+
+  void setCutHz(double cutHz1) {
+    crunch1.cutHz = cutHz1;
+  }
+
+  void setOutGain(double outGain1) {
+    crunch1.outGain = outGain1;
   }
 
 

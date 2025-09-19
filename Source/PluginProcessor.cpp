@@ -36,6 +36,13 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
                    std::make_unique<juce::AudioParameterFloat>("highCutoffFrequency","High Cutoff Frequency",20.0f,10000.0f,2000.0f),
                    std::make_unique<juce::AudioParameterFloat>("rt20","RT20",0.0f,10000.0f,0.0f),
 
+                   //Distortion Component's processor tree state values
+                   std::make_unique<juce::AudioParameterFloat>("fuzz","Fuzz",0.0f,1.0f,0.5f),
+                   std::make_unique<juce::AudioParameterFloat>("drive", "Drive", stfx::units::dbToGain(-12), stfx::units::dbToGain(40), 4),
+                   std::make_unique<juce::AudioParameterFloat>("tonehz", "Tone Hz", 100, 20000, 4000),
+                   std::make_unique<juce::AudioParameterFloat>("cuthz", "Cut Hz", 20, 500, 100),
+                   std::make_unique<juce::AudioParameterFloat>("outgain", "Out Gain", stfx::units::dbToGain(-12), stfx::units::dbToGain(24), 1),
+
 
 
                    std::make_unique<AudioParameterChoice>("wavetype","WaveType",StringArray { "saw", "square", "saw" },0)
@@ -132,6 +139,11 @@ AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::createP
     params.push_back(std::make_unique<juce::AudioParameterFloat>("lowCutoffFrequency","Low Cutoff Frequency",20.0f,10000.0f,200.0f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("highCutoffFrequency","High Cutoff Frequency",20.0f,10000.0f,2000.0f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("rt20","RT20",0.1f,10000.0f,0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("fuzz","Fuzz",0.0f,1.0f,0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("drive", "Drive", stfx::units::dbToGain(-12), stfx::units::dbToGain(40), 4));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("tonehz", "Tone Hz", 100, 20000, 4000));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("cuthz", "Cut Hz", 20, 500, 100));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("outgain", "Out Gain", stfx::units::dbToGain(-12), stfx::units::dbToGain(24), 1));
 
     return { params.begin(), params.end() };
 }
@@ -198,15 +210,24 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
             myVoice->setSustain(tree.getRawParameterValue("sustain")->load());
             myVoice->setRelease(tree.getRawParameterValue("release")->load());
             myVoice->getOscType(tree.getRawParameterValue("wavetype"));
+
             myVoice->setCutoffFrequency(tree.getRawParameterValue("frequency")->load());
+            
             myVoice->setReverbWet(tree.getRawParameterValue("reverbWet")->load());
             myVoice->setReverbDry(tree.getRawParameterValue("reverbDry")->load());
             myVoice->setRoomMs(tree.getRawParameterValue("roomMs")->load());
             myVoice->setLowCutoffFrequency(tree.getRawParameterValue("lowCutoffFrequency")->load());
             myVoice->setHighCutoffFrequency(tree.getRawParameterValue("highCutoffFrequency")->load());
             myVoice->setRT20(tree.getRawParameterValue("rt20")->load());
+
             myVoice->setBlockSize(getBlockSize());
             myVoice->setCurrSampleRate(getSampleRate());
+
+            myVoice->setFuzz(tree.getRawParameterValue("fuzz")->load());
+            myVoice->setDrive(tree.getRawParameterValue("drive")->load());
+            myVoice->setToneHz(tree.getRawParameterValue("tonehz")->load());
+            myVoice->setCutHz(tree.getRawParameterValue("cuthz")->load());
+            myVoice->setOutGain(tree.getRawParameterValue("outgain")->load());
         }
     }
 

@@ -17,6 +17,7 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
       envComponent(p), 
       filterComponent(p),
       reverbComponent(p),
+      crunchComponent(p),
       visualiserComponent(1)  // 1 channel visualizer
 {
     // Set the editor's size
@@ -29,6 +30,7 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
     addAndMakeVisible(&filterComponent);
     addAndMakeVisible(&visualiserComponent);
     addAndMakeVisible(&reverbComponent);
+    addAndMakeVisible(&crunchComponent);
 
     
     // Configure visualizer
@@ -66,7 +68,8 @@ void SimpleSynthAudioProcessorEditor::resized()
     envComponent.setBounds(oscArea);
     filterComponent.setBounds(oscArea.getRight(),40 ,60 ,240 );
     visualiserComponent.setBounds(filterComponent.getRight(),10 ,500 ,230);
-    reverbComponent.setBounds(0,oscComponent.getBottom() + 230,400,700);
+    crunchComponent.setBounds(0,oscComponent.getBottom() + 230,300,700);
+    reverbComponent.setBounds(crunchComponent.getRight(),oscComponent.getBottom() + 230,360,700);
 
 
 

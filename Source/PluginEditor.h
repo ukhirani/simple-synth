@@ -14,7 +14,7 @@
 #include "Envelope.h"
 #include "Filter.h"
 #include "ReverbComponent.h"
-#include <juce_audio_basics/juce_audio_basics.h>
+#include "Crunch.h"
 
 //==============================================================================
 /**
@@ -44,6 +44,7 @@ private:
     Filter filterComponent;
     AudioVisualiserComponent visualiserComponent;
     ReverbComponent reverbComponent;
+    CrunchComponent crunchComponent;
 
     
 
