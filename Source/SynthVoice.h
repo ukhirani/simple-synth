@@ -14,6 +14,9 @@
 #include "../MaximilianDSP/maximilian.h"
 #include "../basics/include/signalsmith-basics/reverb.h"
 #include "../basics/include/signalsmith-basics/crunch.h"
+#include "../basics/include/signalsmith-basics/chorus.h"
+
+
 
 
 class SynthVoice : public SynthesiserVoice {
@@ -103,6 +106,22 @@ public:
     reverb1.rt20 = rt201;
   }
 
+  void setChorusMix(double chorusMix1) {
+    chorus1.mix = chorusMix1;
+  }
+
+  void setChorusDepth(double chorusDepth1) {
+    chorus1.depthMs = chorusDepth1;
+  }
+
+  void setChorusDetune(double chorusDetune1) {
+    chorus1.detune = chorusDetune1;
+  }
+
+  void setChorusStereo(double chorusStereo1) {
+    chorus1.stereo = chorusStereo1;
+  }
+
 
   void startNote(int midiNoteNumber, float velocity, SynthesiserSound *sound,int currentPitchWheelPosition) override {
 
@@ -140,14 +159,15 @@ public:
       }
     }
 
-    // Apply reverb to the entire block after all samples are generated
       float* channels[2] = {
         outputBuffer.getWritePointer(0, startSample),
         outputBuffer.getWritePointer(1, startSample)
     };
 
       crunch1.process(channels, numSamples);
+      chorus1.process(channels,numSamples);
       reverb1.process(channels, numSamples);
+
   }
 
   void getOscType(atomic<float> * selection) {
@@ -193,17 +213,12 @@ public:
     return osc1.sinewave(frequency);
   }
 
-
   double frequency = 440.0f;
 
   maxiOsc osc1;
   int theWave = 0; // default to sine
 
-
-
-
   maxiEnv env1;
-
 
   maxiFilter filter1;
   double cutoffFrequency = 1000.0f;
@@ -211,14 +226,13 @@ public:
   double currSampleRate = 44100.0;
   int currBlockSize;
 
-
   float level = 0.0;
-
 
   //================================================here goes all the signalsmith's stuff ===========================================================
 
   signalsmith::basics::ReverbFloat reverb1;
   signalsmith::basics::CrunchFloat crunch1;
+  signalsmith::basics::ChorusFloat chorus1;
 
 
 };

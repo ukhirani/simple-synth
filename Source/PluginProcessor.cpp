@@ -43,6 +43,19 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
                    std::make_unique<juce::AudioParameterFloat>("cuthz", "Cut Hz", 20, 500, 100),
                    std::make_unique<juce::AudioParameterFloat>("outgain", "Out Gain", stfx::units::dbToGain(-12), stfx::units::dbToGain(24), 1),
 
+                   //Chorus's Component's process tree state values
+                   std::make_unique<juce::AudioParameterFloat>("chorusMix","Chorus Mix",0.0f,1.0f,0.5f),
+                   std::make_unique<juce::AudioParameterFloat>("chorusDepth","Chorus Depth",2.0f,20.0f,15.0f),
+                   std::make_unique<juce::AudioParameterFloat>("chorusDetune","Chorus Detune",1.0f,50.0f,8.0f),
+                   std::make_unique<juce::AudioParameterFloat>("chorusStereo","Chorus Stereo",0.0f,1.5f,0.5f),
+
+
+
+
+
+
+
+
 
 
                    std::make_unique<AudioParameterChoice>("wavetype","WaveType",StringArray { "saw", "square", "saw" },0)
@@ -133,12 +146,14 @@ AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::createP
     params.push_back(std::make_unique<AudioParameterFloat>("release", "Release", 0.1f, 5000.0f, 100.0f));
     params.push_back(std::make_unique<AudioParameterFloat>("decay", "Decay", 0.1f, 5000.0f, 100.0f));
     params.push_back(std::make_unique<AudioParameterFloat>("sustain", "Sustain", 0.1f, 5000.0f, 100.0f));
+
     params.push_back(std::make_unique<juce::AudioParameterFloat>("reverbWet","Reverb Wet",0.0f,1.0f,0.3f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("reverbDry","Reverb Dry",0.0f,1.0f,1.0f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("roomMs","Room Ms",0.1f,10000.0f,500.0f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("lowCutoffFrequency","Low Cutoff Frequency",20.0f,10000.0f,200.0f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("highCutoffFrequency","High Cutoff Frequency",20.0f,10000.0f,2000.0f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("rt20","RT20",0.1f,10000.0f,0.0f));
+
     params.push_back(std::make_unique<juce::AudioParameterFloat>("fuzz","Fuzz",0.0f,1.0f,0.5f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("drive", "Drive", stfx::units::dbToGain(-12), stfx::units::dbToGain(40), 4));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("tonehz", "Tone Hz", 100, 20000, 4000));
@@ -159,6 +174,7 @@ void SimpleSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
         if ((myVoice = dynamic_cast<SynthVoice*>(mySynth.getVoice(i)))) {
            myVoice->reverb1.configure(lastSampleRate,samplesPerBlock);
            myVoice->crunch1.configure(lastSampleRate,samplesPerBlock);
+           myVoice->chorus1.configure(lastSampleRate,samplesPerBlock);
         }
     }
 
