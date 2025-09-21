@@ -23,23 +23,28 @@ Envelope::Envelope(SimpleSynthAudioProcessor& p):processor(p)
     AttackSlider.addListener(this);
     addAndMakeVisible(&AttackSlider);
 
+    EnvelopeLabel.setText("ENVELOPE",NotificationType::dontSendNotification);
+    EnvelopeLabel.setJustificationType(Justification::centred);
+    EnvelopeLabel.setColour(Label::textColourId, Colours::black);
+    addAndMakeVisible(&EnvelopeLabel);
+
     // Initialize ADSR labels
-    ALabel.setText("A", NotificationType::dontSendNotification);
+    ALabel.setText("ATK", NotificationType::dontSendNotification);
     ALabel.setJustificationType(Justification::centred);
     ALabel.setColour(Label::textColourId, Colours::black);
     addAndMakeVisible(&ALabel);
 
-    DLabel.setText("D", NotificationType::dontSendNotification);
+    DLabel.setText("DEC", NotificationType::dontSendNotification);
     DLabel.setJustificationType(Justification::centred);
     DLabel.setColour(Label::textColourId, Colours::black);
     addAndMakeVisible(&DLabel);
 
-    SLabel.setText("S", NotificationType::dontSendNotification);
+    SLabel.setText("SUS", NotificationType::dontSendNotification);
     SLabel.setJustificationType(Justification::centred);
     SLabel.setColour(Label::textColourId, Colours::black);
     addAndMakeVisible(&SLabel);
 
-    RLabel.setText("R", NotificationType::dontSendNotification);
+    RLabel.setText("REL", NotificationType::dontSendNotification);
     RLabel.setJustificationType(Justification::centred);
     RLabel.setColour(Label::textColourId, Colours::black);
     addAndMakeVisible(&RLabel);
@@ -83,8 +88,26 @@ Envelope::~Envelope()
 
 void Envelope::paint (juce::Graphics& g)
 {
+    int borderWidth = 2;
+    auto border = juce::Rectangle<int>(
+        AttackSlider.getX() ,
+        10,
+        (ReleaseSlider.getRight() - AttackSlider.getX() ),
+        30
+    );
+    g.setColour(Colours::black);
+    g.drawRect(border, borderWidth);
+
+    g.drawRect(AttackSlider.getBounds(), borderWidth);
+    g.drawRect(DecaySlider.getBounds(), borderWidth);
+    g.drawRect(SustainSlider.getBounds(), borderWidth);
+    g.drawRect(ReleaseSlider.getBounds(), borderWidth);
+
+
+
 
     AttackSlider.setColour (Slider::textBoxTextColourId, juce::Colours::black);
+    // AttackSlider.setColour(Slider::ColourIds::)
     DecaySlider.setColour (Slider::textBoxTextColourId, juce::Colours::black);
     SustainSlider.setColour (Slider::textBoxTextColourId, juce::Colours::black);
     ReleaseSlider.setColour (Slider::textBoxTextColourId, juce::Colours::black);
@@ -95,7 +118,7 @@ void Envelope::resized()
     constexpr int sliderWidth = 50;
     constexpr int sliderHeight = 200;
     constexpr int startX = 10;
-    constexpr int startY = 0;
+    constexpr int startY = 50;
     constexpr int spacing = 10;
 
     // Set bounds for sliders
@@ -106,13 +129,15 @@ void Envelope::resized()
 
     // Set bounds for labels below sliders
     constexpr int labelY = startY + sliderHeight + 5;
-    constexpr int labelWidth = 20;
+    constexpr int labelWidth = 50;
     constexpr int labelHeight = 20;
 
     ALabel.setBounds(AttackSlider.getX() + (sliderWidth - labelWidth)/2, labelY, labelWidth, labelHeight);
     DLabel.setBounds(DecaySlider.getX() + (sliderWidth - labelWidth)/2, labelY, labelWidth, labelHeight);
     SLabel.setBounds(SustainSlider.getX() + (sliderWidth - labelWidth)/2, labelY, labelWidth, labelHeight);
     RLabel.setBounds(ReleaseSlider.getX() + (sliderWidth - labelWidth)/2, labelY, labelWidth, labelHeight);
+
+    EnvelopeLabel.setBounds(10,15,ReleaseSlider.getRight()- AttackSlider.getX(),20);
 }
 
 void Envelope::sliderValueChanged(Slider* slider) {

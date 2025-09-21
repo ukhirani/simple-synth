@@ -47,6 +47,8 @@ private:
     Label SLabel;
     Label RLabel;
 
+    Label EnvelopeLabel;
+
 
     SimpleSynthAudioProcessor& processor;
 
