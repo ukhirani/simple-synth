@@ -97,6 +97,10 @@ public:
     // confirmed that this function is reacting to the sample rate change
   }
 
+  void setNoiseAmp(double noiseAmp1) {
+    noise_amplitude = noiseAmp1;
+  }
+
   void setReverbWet(double wet1) {
     reverb1.wet = wet1;
 

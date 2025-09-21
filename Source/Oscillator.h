@@ -29,11 +29,18 @@ public:
     void resized() override;
     void FillComboBox();
 
+
+
 private:
     ComboBox oscMenu;
     Label oscLabel;
+
+    Slider noiseAmpSlider;
+    Label NoiseLabel;
+
     SimpleSynthAudioProcessor& processor;
     std::unique_ptr<AudioProcessorValueTreeState::ComboBoxAttachment> waveSelection;
+    std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> noiseAmpSliderAttachment;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Oscillator)
 };

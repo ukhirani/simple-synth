@@ -24,7 +24,7 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
       visualiserComponent(1)
 {
     // Set the editor's size
-    setSize (950, 700);
+    setSize (910, 700);
     setResizable(true, true);
     
     // Add and make visible all components

@@ -23,6 +23,7 @@ Oscillator::Oscillator(SimpleSynthAudioProcessor& p):processor(p)
     waveSelection = std::unique_ptr<AudioProcessorValueTreeState::ComboBoxAttachment>(
         new AudioProcessorValueTreeState::ComboBoxAttachment(processor.tree, "wavetype", oscMenu)
     );
+    noiseAmpSliderAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "noiseAmp", noiseAmpSlider);
 
     addAndMakeVisible(oscLabel);
     oscLabel.setText("OSC", NotificationType::dontSendNotification);
@@ -37,17 +38,17 @@ Oscillator::Oscillator(SimpleSynthAudioProcessor& p):processor(p)
     oscMenu.setColour(ComboBox::ColourIds::arrowColourId , Colours::black);
     oscMenu.setColour(ComboBox::ColourIds::focusedOutlineColourId , Colours::black);
 
+    noiseAmpSlider.setSliderStyle(Slider::SliderStyle::LinearBarVertical);
+    noiseAmpSlider.setColour(Slider::textBoxTextColourId, juce::Colours::black);
+    addAndMakeVisible(&noiseAmpSlider);
 
-
-
-
-
-
-
+    NoiseLabel.setText("NOISE", NotificationType::dontSendNotification);
+    NoiseLabel.setJustificationType(Justification::centred);
+    NoiseLabel.setColour(Label::textColourId, Colours::black);
+    addAndMakeVisible(NoiseLabel);
 
     addAndMakeVisible(&oscMenu);
     oscMenu.addListener(this);
-
 
 }
 
@@ -64,29 +65,21 @@ void Oscillator::paint (juce::Graphics& g)
 
     g.drawRect(oscLabel.getBounds(), borderWidth);
     g.drawRect(oscMenu.getBounds(), borderWidth + 1);
-    const auto area = getLocalBounds().removeFromBottom(210).reduced(10);
-    g.drawRect(area, borderWidth );
-    g.drawEllipse(area.getX()+5,area.getY()+5,area.getWidth()-10,area.getHeight()-10,borderWidth);
+    g.drawRect(noiseAmpSlider.getBounds(), borderWidth);
+
 
 
 }
 
 void Oscillator::comboBoxChanged(juce::ComboBox* comboBox)
 {
-    if (comboBox == &oscMenu)
-    {
-        // Handle the combo box selection change
-        int selectedId = oscMenu.getSelectedId();
-        // std::cout << selectedId <<" "<<oscMenu.getItemText(selectedId-1)<<std::endl;
 
-        // Do something with the selectedId
-    }
 }
 
 void Oscillator::resized()
 {
-    constexpr int sliderWidth = 50;
-    constexpr int sliderHeight = 200;
+    constexpr int sliderWidth = 100;
+    constexpr int sliderHeight = 160;
     constexpr int startX = 10;
     constexpr int startY = 10;
     constexpr int spacing = 10;
@@ -97,6 +90,8 @@ void Oscillator::resized()
 
     oscMenu.setBounds(10, 40 +  10, 250, labelHeight);
     oscLabel.setBounds(10,10,oscMenu.getWidth(),30);
+    noiseAmpSlider.setBounds(10, oscMenu.getBottom() + 10, sliderWidth, sliderHeight);
+    NoiseLabel.setBounds(10,noiseAmpSlider.getBottom() + 10, sliderWidth, labelHeight);
 }
 
 void Oscillator::FillComboBox()
