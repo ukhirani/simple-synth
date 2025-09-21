@@ -9,12 +9,18 @@
 */
 
 #pragma once
+
+
+#include <ranges>
+
 #include "JuceHeader.h"
 #include "SynthSound.h"
 #include "../MaximilianDSP/maximilian.h"
 #include "../basics/include/signalsmith-basics/reverb.h"
 #include "../basics/include/signalsmith-basics/crunch.h"
 #include "../basics/include/signalsmith-basics/chorus.h"
+#include "../basics/include/signalsmith-basics/freq-shifter.h"
+#include "../basics/include/signalsmith-basics/limiter.h"
 
 
 
@@ -30,7 +36,6 @@ public:
     env1.trigger = 0;
 
     //now initialzing the signalsmith's reverb
-
     // reverb1.configure(currSampleRate,currBlockSize);
     reverb1.wet = 0.2;
 
@@ -39,16 +44,27 @@ public:
     crunch1.fuzz = 0.1;
     crunch1.drive = 4;
     crunch1.fuzz = 0.5;
-    // ParamRange drive{4};//stfx::units::dbToGain(autoGain ? 24 : 12)};
-    // ParamRange fuzz{0};
-    // ParamRange toneHz{2000};
-    // ParamRange cutHz{50};
-    // ParamRange outGain{1};
+
+    //init maxiFilter
+    filter1.setResonance(0);
+
 
 
 
 
   }
+  double getNoise(bool NoiseFlag) {
+    return noise_amplitude * noise1.noise();
+  }
+
+  double getSum(vector<double> &summation) {
+    double sum = 0.0;
+    for (size_t i = 0; i < summation.size(); i++) {
+      sum+=summation[i];
+    }
+    return sum;
+  }
+
   bool canPlaySound(SynthesiserSound *sound) override {
     // it will return true only if the cast is successful otherwise false.
     return dynamic_cast<SynthSound *>(sound) != nullptr;
@@ -62,15 +78,15 @@ public:
     env1.setDecay(decay);
   }
 
-  void setSustain(double sustain) {
+  void setSustain(const double sustain) {
     env1.setSustain(sustain);
   }
 
-  void setRelease(double release) {
+  void setRelease(const double release) {
     env1.setRelease(release);
   }
 
-  void setCutoffFrequency(double CutoffFreq) {
+  void setCutoffFrequency(const double CutoffFreq) {
     cutoffFrequency = CutoffFreq;
   }
 
@@ -151,11 +167,20 @@ public:
     // First, generate all the samples
     for (int i = 0; i < numSamples; i++) {
       double theSound = env1.adsr(setOscType(), env1.trigger) * level;
-      double filteredSound = filter1.lores(theSound, cutoffFrequency, filterResonance);
+      double theNoise = env1.adsr(getNoise(NoiseFlag), env1.trigger);
+
+      vector<double> summation = vector<double>();
+
+      summation.push_back(theSound);
+      summation.push_back(theNoise);
+
+      double theSum = env1.adsr(getSum(summation), env1.trigger);
+      float filteredSound = filter1.lores(theSum, cutoffFrequency, filterResonance);
+      // cout<<filter1.getCutoff()<<"\t"<<filter1.getResonance()<<endl;
 
       // Write to all channels
       for (int channel = 0; channel < outputBuffer.getNumChannels(); channel++) {
-        outputBuffer.addSample(channel, startSample + i, theSound);
+        outputBuffer.addSample(channel, startSample + i, filteredSound);
       }
     }
 
@@ -164,9 +189,9 @@ public:
         outputBuffer.getWritePointer(1, startSample)
     };
 
-      // crunch1.process(channels, numSamples);
+      crunch1.process(channels, numSamples);
       chorus1.process(channels,numSamples);
-      // reverb1.process(channels, numSamples);
+      reverb1.process(channels, numSamples);
 
   }
 
@@ -198,7 +223,9 @@ public:
     crunch1.outGain = outGain1;
   }
 
-
+  void setResonance(double resonance1) {
+    filterResonance = resonance1;
+  }
 
   double setOscType() {
     if (theWave == 0) {
@@ -218,6 +245,11 @@ public:
   maxiOsc osc1;
   int theWave = 0; // default to sine
 
+  //noise and related stuff
+  maxiOsc noise1;
+  double noise_amplitude = 0.1;
+  bool NoiseFlag = true;
+
   maxiEnv env1;
 
   maxiFilter filter1;
@@ -226,13 +258,14 @@ public:
   double currSampleRate = 44100.0;
   int currBlockSize;
 
-  float level = 0.0;
+  double level = 0.0;
 
   //================================================here goes all the signalsmith's stuff ===========================================================
 
   signalsmith::basics::ReverbFloat reverb1;
   signalsmith::basics::CrunchFloat crunch1;
   signalsmith::basics::ChorusFloat chorus1;
+  signalsmith::basics::LimiterFloat limiter1;
 
 
 };
