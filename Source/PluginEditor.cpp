@@ -9,6 +9,8 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+#include <ranges>
+
 //==============================================================================
 SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAudioProcessor& p)
     : AudioProcessorEditor (&p), 
@@ -59,15 +61,16 @@ void SimpleSynthAudioProcessorEditor::paint (juce::Graphics& g) {
 void SimpleSynthAudioProcessorEditor::resized()
 {
     Rectangle<int> area = getLocalBounds();
-    Rectangle<int> oscArea = area.removeFromTop(280).removeFromLeft(250);
 
-    oscComponent.setBounds(oscArea.removeFromTop(40));
-    envComponent.setBounds(oscArea);
-    filterComponent.setBounds(oscArea.getRight(),40 ,60 ,240 );
-    visualiserComponent.setBounds(filterComponent.getRight(),10 ,600 ,250);
-    crunchComponent.setBounds(0,oscComponent.getBottom() + 230,300,700);
-    reverbComponent.setBounds(crunchComponent.getRight(),oscComponent.getBottom() + 230,360,700);
-    chorusComponent.setBounds(reverbComponent.getRight(),oscComponent.getBottom() + 230,370,700);
+    oscComponent.setBounds(0,0,270,280);
+    envComponent.setBounds(oscComponent.getRight() - 10,0,250,280);
+    filterComponent.setBounds(envComponent.getRight(),0 ,120 ,280 );
+    crunchComponent.setBounds(0,oscComponent.getBottom(),300,700);
+    reverbComponent.setBounds(crunchComponent.getRight(),oscComponent.getBottom() ,360,700);
+    chorusComponent.setBounds(reverbComponent.getRight(),oscComponent.getBottom() ,370,700);
+
+    visualiserComponent.setBounds(getLocalBounds().removeFromBottom(160).reduced(10));
+
 
 
 
