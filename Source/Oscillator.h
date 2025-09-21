@@ -31,6 +31,7 @@ public:
 
 private:
     ComboBox oscMenu;
+    Label oscLabel;
     SimpleSynthAudioProcessor& processor;
     std::unique_ptr<AudioProcessorValueTreeState::ComboBoxAttachment> waveSelection;
 
