@@ -6,20 +6,38 @@ Filter::Filter(SimpleSynthAudioProcessor& p):processor(p)
 {
 
   FrequencySlider.setSliderStyle(Slider::LinearBarVertical);
-  // Constrain UI to safe DSP range
-  FrequencySlider.setRange(20.0f,10000.0f);
+  // FrequencySlider.setRange(20.0f,10000.0f);
   FrequencySlider.setTextBoxStyle(Slider::TextBoxBelow,false,20.0,20.0);
-  FrequencySlider.setValue(1000.0f);
-  FrequencySlider.addListener(this);
-  addAndMakeVisible(&FrequencySlider);
 
-  FrequencyLabel.setText("Hz", NotificationType::dontSendNotification);
+  ResonanceSlider.setSliderStyle(Slider::LinearBarVertical);
+  ResonanceSlider.setRange(0.0f,5.0f);
+  ResonanceSlider.setTextBoxStyle(Slider::TextBoxBelow,false,20.0,20.0);
+
+  FrequencyLabel.setText("FREQ", NotificationType::dontSendNotification);
   FrequencyLabel.setJustificationType(Justification::centred);
   FrequencyLabel.setColour(Label::textColourId, Colours::black);
+
+  ResonanceLabel.setText("RES", NotificationType::dontSendNotification);
+  ResonanceLabel.setJustificationType(Justification::centred);
+  ResonanceLabel.setColour(Label::textColourId, Colours::black);
+
+  FilterLabel.setText("FILTER", NotificationType::dontSendNotification);
+  FilterLabel.setJustificationType(Justification::centred);
+  FilterLabel.setColour(Label::textColourId, Colours::black);
+
+  addAndMakeVisible(&FrequencySlider);
+  addAndMakeVisible(&ResonanceSlider);
   addAndMakeVisible(&FrequencyLabel);
+  addAndMakeVisible(&ResonanceLabel);
+  addAndMakeVisible(&FilterLabel);
+
+
+
 
   FrequencyAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(
     processor.tree, "frequency", FrequencySlider);
+  ResonanceAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(
+  processor.tree, "resonance", ResonanceSlider);
 
 
 
@@ -32,18 +50,25 @@ Filter::~Filter()
 void Filter::paint (juce::Graphics& g)
 {
 
+  int borderWidth = 2;
+
   FrequencySlider.setColour (Slider::textBoxTextColourId, juce::Colours::black);
   FrequencyLabel.setColour (Slider::textBoxTextColourId, juce::Colours::black);
 
+  ResonanceSlider.setColour (Slider::textBoxTextColourId, juce::Colours::black);
+  ResonanceLabel.setColour (Slider::textBoxTextColourId, juce::Colours::black);
 
-  //now majority of the part of the ui implementation of the filter is done already
-  //the only thing that's left is to :
-  //TODO: add filter values to the value tree state
+  auto border = juce::Rectangle<int>(
+      FrequencySlider.getX() ,
+      10,
+      (ResonanceSlider.getRight() - FrequencySlider.getX() ),
+      30
+  );
+  g.setColour(Colours::black);
+  g.drawRect(border, borderWidth);
 
-
-
-
-
+  g.drawRect(FrequencySlider.getBounds(), borderWidth);
+  g.drawRect(ResonanceSlider.getBounds(), borderWidth);
 
 }
 
@@ -53,10 +78,11 @@ void Filter::resized()
   const int sliderWidth = 50;
   const int sliderHeight = 200;
   const int startX = 0;
-  const int startY = 0;
-  const int spacing = 20;
+  const int startY = 50;
+  const int spacing = 10;
 
   FrequencySlider.setBounds(startX, startY, sliderWidth, sliderHeight);
+  ResonanceSlider.setBounds(startX + spacing + sliderWidth, startY,sliderWidth , sliderHeight);
 
 
   const int labelY = startY + sliderHeight + 5;
@@ -64,6 +90,10 @@ void Filter::resized()
   const int labelHeight = 20;
 
   FrequencyLabel.setBounds(FrequencySlider.getX() + (sliderWidth - labelWidth)/2, labelY, labelWidth, labelHeight);
+  ResonanceLabel.setBounds(ResonanceSlider.getX() + (sliderWidth - labelWidth)/2, labelY, labelWidth, labelHeight);
+
+  FilterLabel.setBounds(  0,15,ResonanceSlider.getRight()- FrequencySlider.getX(),20);
+
 
 
 
@@ -72,8 +102,3 @@ void Filter::resized()
 
 }
 
-void Filter::sliderValueChanged(Slider* slider) {
-  if (slider == &FrequencySlider) {
-        processor.CutoffFrequency = FrequencySlider.getValue();
-  }
-}
