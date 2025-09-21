@@ -17,6 +17,7 @@
 #include "Filter.h"
 #include "ReverbComponent.h"
 #include "Crunch.h"
+#include "Limiter.h"
 
 //==============================================================================
 /**
@@ -48,6 +49,9 @@ private:
     ReverbComponent reverbComponent;
     CrunchComponent crunchComponent;
     ChorusComponent chorusComponent;
+    LimiterComponent limiterComponent;
+
+    Rectangle<int> area;
 
     
 

@@ -8,9 +8,6 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-
-#include <ranges>
-
 //==============================================================================
 SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAudioProcessor& p)
     : AudioProcessorEditor (&p), 
@@ -21,10 +18,11 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
       reverbComponent(p),
       crunchComponent(p),
       chorusComponent(p),
+      limiterComponent(p),
       visualiserComponent(1)
 {
     // Set the editor's size
-    setSize (910, 700);
+    setSize (910, 770);
     // setResizable(true, true);
     
     // Add and make visible all components
@@ -35,6 +33,7 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
     addAndMakeVisible(&reverbComponent);
     addAndMakeVisible(&crunchComponent);
     addAndMakeVisible(&chorusComponent);
+    addAndMakeVisible(&limiterComponent);
 
     
     // Configure visualizer
@@ -55,21 +54,23 @@ void SimpleSynthAudioProcessorEditor::paint (juce::Graphics& g) {
     g.fillAll (juce::Colours::white);
     g.setColour (juce::Colours::black);
     g.setFont (juce::FontOptions (15.0f));
+    g.drawRect(area,3);
 
 }
 
 void SimpleSynthAudioProcessorEditor::resized()
 {
-    Rectangle<int> area = getLocalBounds();
+    area = getLocalBounds().removeFromTop(80).reduced(10);
 
-    oscComponent.setBounds(0,0,270,280);
-    envComponent.setBounds(oscComponent.getRight() - 10,0,250,280);
-    filterComponent.setBounds(envComponent.getRight(),0 ,120 ,280 );
-    crunchComponent.setBounds(0,oscComponent.getBottom(),300,700);
-    chorusComponent.setBounds(crunchComponent.getRight(),oscComponent.getBottom() ,240,700);
+    const int startY = area.getBottom();
+
+    oscComponent.setBounds(0,startY,250,280);
+    envComponent.setBounds(oscComponent.getRight() - 10,startY,250,280);
+    filterComponent.setBounds(envComponent.getRight(),startY ,120 ,280);
+    crunchComponent.setBounds(filterComponent.getRight() - 10,startY + 10,300,300);
+    chorusComponent.setBounds(0,oscComponent.getBottom() ,240,700);
     reverbComponent.setBounds(chorusComponent.getRight(),oscComponent.getBottom() ,360,700);
-
-
+    limiterComponent.setBounds(crunchComponent.getX(),oscComponent.getBottom() ,300,300);
     visualiserComponent.setBounds(getLocalBounds().removeFromBottom(160).reduced(10));
 
 

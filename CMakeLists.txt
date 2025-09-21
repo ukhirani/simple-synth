@@ -87,6 +87,7 @@ target_sources(SimpleSynth PRIVATE
         Source/ReverbComponent.cpp
         Source/Crunch.cpp
         Source/Chorus.cpp
+        Source/Limiter.cpp
 )
 
 target_link_libraries(SimpleSynth PRIVATE

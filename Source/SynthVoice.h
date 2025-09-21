@@ -48,6 +48,12 @@ public:
     //init maxiFilter
     filter1.setResonance(0);
 
+    //init Limiter
+
+
+
+
+
 
 
 
@@ -196,6 +202,8 @@ public:
       crunch1.process(channels, numSamples);
       chorus1.process(channels,numSamples);
       reverb1.process(channels, numSamples);
+      limiter1.process(channels, numSamples);
+
 
   }
 
@@ -264,8 +272,7 @@ public:
 
   double level = 0.0;
 
-  //================================================here goes all the signalsmith's stuff ===========================================================
-
+  //================================== here goes all the signalsmith's stuff =========================================
   signalsmith::basics::ReverbFloat reverb1;
   signalsmith::basics::CrunchFloat crunch1;
   signalsmith::basics::ChorusFloat chorus1;
