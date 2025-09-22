@@ -19,7 +19,6 @@
 #include "../basics/include/signalsmith-basics/reverb.h"
 #include "../basics/include/signalsmith-basics/crunch.h"
 #include "../basics/include/signalsmith-basics/chorus.h"
-#include "../basics/include/signalsmith-basics/freq-shifter.h"
 #include "../basics/include/signalsmith-basics/limiter.h"
 
 
@@ -49,6 +48,7 @@ public:
     filter1.setResonance(0);
 
     //init Limiter
+
 
 
 
@@ -148,17 +148,32 @@ public:
     chorus1.stereo = chorusStereo1;
   }
 
+  void setOscAmp(double oscAmp1) {
+    oscAmp = oscAmp1;
+  }
+
+  void setOctave (int octave) {
+    oscOct = octave;
+  }
+
+  void setSemitone (int semitone) {
+    oscSemi = semitone;
+  }
+
 
   void startNote(int midiNoteNumber, float velocity, SynthesiserSound *sound,int currentPitchWheelPosition) override {
 
     env1.trigger = 1;
 
     //velocity will be ranging from 0.0 to 1.0 so that is the float value that we are multiplying with the sound source's amplitude
-    level = velocity*(0.5);
+    level = velocity;
 
 
     //find the equivalent frequency for the note that is being played
-    frequency = MidiMessage::getMidiNoteInHertz(midiNoteNumber);
+    int finalMidi = midiNoteNumber + 12*oscOct + oscSemi;
+
+    //TODO: Integrate the pitch wheel bend here
+    frequency = MidiMessage::getMidiNoteInHertz(finalMidi);
 
 
   }
@@ -176,7 +191,7 @@ public:
 
     // First, generate all the samples
     for (int i = 0; i < numSamples; i++) {
-      double theSound = env1.adsr(setOscType(), env1.trigger) * level;
+      double theSound = env1.adsr(setOscType(), env1.trigger) * level * oscAmp;
       double theNoise = env1.adsr(getNoise(NoiseFlag), env1.trigger);
 
       vector<double> summation = vector<double>();
@@ -186,7 +201,6 @@ public:
 
       double theSum = env1.adsr(getSum(summation), env1.trigger);
       float filteredSound = filter1.lores(theSum, cutoffFrequency, filterResonance);
-      // cout<<filter1.getCutoff()<<"\t"<<filter1.getResonance()<<endl;
 
       // Write to all channels
       for (int channel = 0; channel < outputBuffer.getNumChannels(); channel++) {
@@ -256,6 +270,12 @@ public:
 
   maxiOsc osc1;
   int theWave = 0; // default to sine
+
+  //init oscAmp's stuff
+  double oscAmp = 0.5;
+  int oscOct = 0;
+  int oscSemi = 0;
+
 
   //noise and related stuff
   maxiOsc noise1;

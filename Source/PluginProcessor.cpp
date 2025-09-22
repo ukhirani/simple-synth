@@ -24,6 +24,9 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
 
                 //Noise Oscillator's processor tree state values
                    std::make_unique<juce::AudioParameterFloat>("noiseAmp", "Noise Amplitude", 0.0f, 1.0f, 0.0f),
+                   std::make_unique<juce::AudioParameterFloat>("oscAmp", "Oscillator Amplitude", 0.0f, 1.0f, 0.5f),
+                   std::make_unique<juce::AudioParameterInt>("oscOct", "Oscillator Octave", -3, 3, 0),
+                   std::make_unique<juce::AudioParameterInt>("oscSemi", "Oscillator Semitone", -11, +11, 0),
 
                    std::make_unique<juce::AudioParameterFloat>("attack", "Attack", 0.1f, 5000.0f, 100.0f),
                    std::make_unique<juce::AudioParameterFloat>("decay", "Decay", 0.1f, 5000.0f, 100.0f),
@@ -55,6 +58,8 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
                    std::make_unique<juce::AudioParameterFloat>("chorusStereo","Chorus Stereo",0.0f,1.5f,0.5f),
 
                    std::make_unique<AudioParameterChoice>("wavetype","WaveType",StringArray { "saw", "square", "saw" },0)
+
+
 
                })
 #endif
@@ -140,7 +145,11 @@ AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::createP
 
     params.push_back(std::make_unique<AudioParameterFloat>("frequency","Cutoff Frequency",20.0f,10000.0f,1000.0f));
     params.push_back(std::make_unique<AudioParameterFloat>("resonance","Filter Resonance",0.1f,10.0f,1.0f));
+
     params.push_back(std::make_unique<AudioParameterFloat>("noiseAmp", "Noise Amplitude", 0.0f, 1.0f, 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("oscAmp", "Oscillator Amplitude", 0.0f, 1.0f, 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterInt>("oscOct", "Oscillator Octave", -3, 3, 0));
+    params.push_back(std::make_unique<juce::AudioParameterInt>("oscSemi", "Oscillator Semitone", -11, +11, 0));
 
     params.push_back(std::make_unique<AudioParameterFloat>("attack", "Attack", 0.1f, 5000.0f, 100.0f));
     params.push_back(std::make_unique<AudioParameterFloat>("release", "Release", 0.1f, 5000.0f, 100.0f));
@@ -224,6 +233,10 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
         if ((myVoice = dynamic_cast<SynthVoice*>(mySynth.getVoice(i)))) {
 
             myVoice->setNoiseAmp(tree.getRawParameterValue("noiseAmp")->load());
+            myVoice->setOscAmp(tree.getRawParameterValue("oscAmp")->load());
+            myVoice->setOctave(tree.getRawParameterValue("oscOct")->load());
+            myVoice->setSemitone(tree.getRawParameterValue("oscSemi")->load());
+
 
             myVoice->setAttack(tree.getRawParameterValue("attack")->load());
             myVoice->setDecay(tree.getRawParameterValue("decay")->load());

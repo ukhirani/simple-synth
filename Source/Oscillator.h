@@ -44,6 +44,9 @@ private:
     SimpleSynthAudioProcessor& processor;
     std::unique_ptr<AudioProcessorValueTreeState::ComboBoxAttachment> waveSelection;
     std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> noiseAmpSliderAttachment;
+    std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> octaveSliderAttachment;
+    std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> semitoneAmpSliderAttachment;
+    std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> oscAmpSliderAttachment;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Oscillator)
 };

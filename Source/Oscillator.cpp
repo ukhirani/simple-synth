@@ -22,11 +22,6 @@ Oscillator::Oscillator(SimpleSynthAudioProcessor& p):processor(p)
     addAndMakeVisible(&oscMenu);
     oscMenu.addListener(this);
 
-    waveSelection = std::unique_ptr<AudioProcessorValueTreeState::ComboBoxAttachment>(
-        new AudioProcessorValueTreeState::ComboBoxAttachment(processor.tree, "wavetype", oscMenu)
-    );
-    noiseAmpSliderAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "noiseAmp", noiseAmpSlider);
-
     addAndMakeVisible(oscLabel);
     oscLabel.setText("OSC", NotificationType::dontSendNotification);
     oscLabel.setFont(FontOptions(15.0f,Font::bold));
@@ -52,7 +47,7 @@ Oscillator::Oscillator(SimpleSynthAudioProcessor& p):processor(p)
 
     SemiToneSlider.setSliderStyle(Slider::SliderStyle::IncDecButtons);
     SemiToneSlider.setColour(Slider::textBoxTextColourId, juce::Colours::black);
-    SemiToneSlider.setRange(-7,+7,1);
+    SemiToneSlider.setRange(-11,11,1);
     addAndMakeVisible(&SemiToneSlider);
 
 
@@ -79,6 +74,20 @@ Oscillator::Oscillator(SimpleSynthAudioProcessor& p):processor(p)
     SemiToneLabel.setJustificationType(Justification::centred);
     SemiToneLabel.setColour(Label::textColourId, Colours::black);
     addAndMakeVisible(&SemiToneLabel);
+
+
+
+    waveSelection = std::unique_ptr<AudioProcessorValueTreeState::ComboBoxAttachment>(
+    new AudioProcessorValueTreeState::ComboBoxAttachment(processor.tree, "wavetype", oscMenu)
+);
+    noiseAmpSliderAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "noiseAmp", noiseAmpSlider);
+    oscAmpSliderAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "oscAmp",OscAmpSlider);
+    octaveSliderAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "oscOct",OctaveSlider);
+    semitoneAmpSliderAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "oscSemi",SemiToneSlider);
+
+
+
+
 
 
 
@@ -120,9 +129,9 @@ void Oscillator::resized()
     constexpr int labelWidth = 50;
     constexpr int labelHeight = 20;
 
-    oscMenu.setBounds(10, 40 +  10, getLocalBounds().getWidth()-20, labelHeight);
-    oscLabel.setBounds(10,10,oscMenu.getWidth(),30);
-    noiseAmpSlider.setBounds(10, oscMenu.getBottom() + 10, sliderWidth, sliderHeight);
+    oscMenu.setBounds(startX, 40 +  10, getLocalBounds().getWidth()-20, labelHeight);
+    oscLabel.setBounds(startX,10,oscMenu.getWidth(),30);
+    noiseAmpSlider.setBounds(startX, oscMenu.getBottom() + 10, sliderWidth, sliderHeight);
 
     OctaveLabel.setBounds(noiseAmpSlider.getRight()  + spacing,noiseAmpSlider.getY()-2,sliderWidth/2 + 5,labelHeight);
     SemiToneLabel.setBounds(noiseAmpSlider.getRight()  + spacing*2 + OctaveLabel.getWidth(),noiseAmpSlider.getY()-2,sliderWidth/2 + 5,labelHeight);
