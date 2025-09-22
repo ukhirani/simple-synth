@@ -17,6 +17,9 @@ ChorusComponent::ChorusComponent(SimpleSynthAudioProcessor& p)
 
     initChorusLabel("CHORUS", ChorusLabel);
 
+    ChorusLabel.setFont(FontOptions(15.0f,Font::bold));
+
+
     chorusMixSliderAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "chorusMix", chorusMixSlider);
     chorusDepthSliderAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "chorusDepth", chorusDepthSlider);
     chorusDetuneSliderAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "chorusDetune", chorusDetuneSlider);

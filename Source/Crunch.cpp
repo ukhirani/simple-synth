@@ -17,6 +17,9 @@ CrunchComponent::CrunchComponent(SimpleSynthAudioProcessor& p)
     initCrunchLabel("GAIN", outgainLabel);
     initCrunchLabel("CRUNCH", CrunchLabel);
 
+    CrunchLabel.setFont(FontOptions(15.0f,Font::bold));
+
+
     fuzzSliderAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "fuzz", fuzzSlider);
     driveSliderAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "drive", driveSlider);
     tonehzSliderAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "tonehz", tonehzSlider);

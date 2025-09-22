@@ -25,6 +25,9 @@ Filter::Filter(SimpleSynthAudioProcessor& p):processor(p)
   FilterLabel.setJustificationType(Justification::centred);
   FilterLabel.setColour(Label::textColourId, Colours::black);
 
+  FilterLabel.setFont(FontOptions(15.0f,Font::bold));
+
+
   addAndMakeVisible(&FrequencySlider);
   addAndMakeVisible(&ResonanceSlider);
   addAndMakeVisible(&FrequencyLabel);

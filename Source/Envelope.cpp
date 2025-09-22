@@ -28,6 +28,9 @@ Envelope::Envelope(SimpleSynthAudioProcessor& p):processor(p)
     EnvelopeLabel.setColour(Label::textColourId, Colours::black);
     addAndMakeVisible(&EnvelopeLabel);
 
+    EnvelopeLabel.setFont(FontOptions(15.0f,Font::bold));
+
+
     // Initialize ADSR labels
     ALabel.setText("ATK", NotificationType::dontSendNotification);
     ALabel.setJustificationType(Justification::centred);

@@ -17,6 +17,8 @@ LimiterComponent::LimiterComponent(SimpleSynthAudioProcessor& p)
     initLimiterLabel("REL", releaseMsLabel);
 
     initLimiterLabel("LIMITER", LimiterLabel);
+    LimiterLabel.setFont(FontOptions(15.0f,Font::bold));
+
 
     inputGainSliderAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "inputGain", inputGainSlider);
     outputLimitSliderAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "outputLimit", outputLimitSlider);

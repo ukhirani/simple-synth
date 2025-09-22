@@ -32,6 +32,8 @@ ReverbComponent::ReverbComponent(SimpleSynthAudioProcessor& p) : processor(p)
     initReverbLabel("HIGH",highCutLabel);
     initReverbLabel("RT20",rt20Label);
     initReverbLabel("REVERB",ReverbLabel);
+    ReverbLabel.setFont(FontOptions(15.0f,Font::bold));
+
 
 
 
