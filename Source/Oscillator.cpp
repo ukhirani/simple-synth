@@ -19,6 +19,8 @@ Oscillator::Oscillator(SimpleSynthAudioProcessor& p):processor(p)
 {
     FillComboBox();
     oscMenu.setJustificationType(Justification::centred);
+    addAndMakeVisible(&oscMenu);
+    oscMenu.addListener(this);
 
     waveSelection = std::unique_ptr<AudioProcessorValueTreeState::ComboBoxAttachment>(
         new AudioProcessorValueTreeState::ComboBoxAttachment(processor.tree, "wavetype", oscMenu)
@@ -27,6 +29,7 @@ Oscillator::Oscillator(SimpleSynthAudioProcessor& p):processor(p)
 
     addAndMakeVisible(oscLabel);
     oscLabel.setText("OSC", NotificationType::dontSendNotification);
+    oscLabel.setFont(FontOptions(15.0f,Font::bold));
     oscLabel.setJustificationType(Justification::centred);
     oscLabel.setColour(Label::textColourId, Colours::black);
     cout<<oscLabel.getText();
@@ -42,13 +45,42 @@ Oscillator::Oscillator(SimpleSynthAudioProcessor& p):processor(p)
     noiseAmpSlider.setColour(Slider::textBoxTextColourId, juce::Colours::black);
     addAndMakeVisible(&noiseAmpSlider);
 
+    OctaveSlider.setSliderStyle(Slider::SliderStyle::IncDecButtons);
+    OctaveSlider.setRange(-3,+3,1);
+    OctaveSlider.setColour(Slider::textBoxTextColourId, juce::Colours::black);
+    addAndMakeVisible(&OctaveSlider);
+
+    SemiToneSlider.setSliderStyle(Slider::SliderStyle::IncDecButtons);
+    SemiToneSlider.setColour(Slider::textBoxTextColourId, juce::Colours::black);
+    SemiToneSlider.setRange(-7,+7,1);
+    addAndMakeVisible(&SemiToneSlider);
+
+
+    OscAmpSlider.setSliderStyle(Slider::SliderStyle::LinearBarVertical);
+    OscAmpSlider.setColour(Slider::textBoxTextColourId, juce::Colours::black);
+    addAndMakeVisible(&OscAmpSlider);
+
+    OscAmpLabel.setText("OSC-AMP", NotificationType::dontSendNotification);
+    OscAmpLabel.setJustificationType(Justification::centred);
+    OscAmpLabel.setColour(Label::textColourId, Colours::black);
+    addAndMakeVisible(&OscAmpLabel);
+
     NoiseLabel.setText("NOISE", NotificationType::dontSendNotification);
     NoiseLabel.setJustificationType(Justification::centred);
     NoiseLabel.setColour(Label::textColourId, Colours::black);
-    addAndMakeVisible(NoiseLabel);
+    addAndMakeVisible(&NoiseLabel);
 
-    addAndMakeVisible(&oscMenu);
-    oscMenu.addListener(this);
+    OctaveLabel.setText("OCT", NotificationType::dontSendNotification);
+    OctaveLabel.setJustificationType(Justification::centred);
+    OctaveLabel.setColour(Label::textColourId, Colours::black);
+    addAndMakeVisible(&OctaveLabel);
+
+    SemiToneLabel.setText("SEM", NotificationType::dontSendNotification);
+    SemiToneLabel.setJustificationType(Justification::centred);
+    SemiToneLabel.setColour(Label::textColourId, Colours::black);
+    addAndMakeVisible(&SemiToneLabel);
+
+
 
 }
 
@@ -65,6 +97,7 @@ void Oscillator::paint (juce::Graphics& g)
     g.drawRect(oscLabel.getBounds(), borderWidth);
     g.drawRect(oscMenu.getBounds(), borderWidth + 1);
     g.drawRect(noiseAmpSlider.getBounds(), borderWidth);
+    g.drawRect(OscAmpSlider.getBounds(), borderWidth);
 
 
 
@@ -77,7 +110,7 @@ void Oscillator::comboBoxChanged(juce::ComboBox* comboBox)
 
 void Oscillator::resized()
 {
-    constexpr int sliderWidth = 100;
+    int sliderWidth = 100;
     constexpr int sliderHeight = 170;
     constexpr int startX = 10;
     constexpr int startY = 10;
@@ -90,7 +123,19 @@ void Oscillator::resized()
     oscMenu.setBounds(10, 40 +  10, getLocalBounds().getWidth()-20, labelHeight);
     oscLabel.setBounds(10,10,oscMenu.getWidth(),30);
     noiseAmpSlider.setBounds(10, oscMenu.getBottom() + 10, sliderWidth, sliderHeight);
-    NoiseLabel.setBounds(10,noiseAmpSlider.getBottom() + 5, sliderWidth, labelHeight);
+
+    OctaveLabel.setBounds(noiseAmpSlider.getRight()  + spacing,noiseAmpSlider.getY()-2,sliderWidth/2 + 5,labelHeight);
+    SemiToneLabel.setBounds(noiseAmpSlider.getRight()  + spacing*2 + OctaveLabel.getWidth(),noiseAmpSlider.getY()-2,sliderWidth/2 + 5,labelHeight);
+
+    OctaveSlider.setBounds(noiseAmpSlider.getRight()  + spacing,OctaveLabel.getBottom() + 1,sliderWidth/2 + 5 ,labelHeight);
+    SemiToneSlider.setBounds(noiseAmpSlider.getRight()  + spacing*2 + OctaveLabel.getWidth(),OctaveLabel.getBottom() + 1,sliderWidth/2 + 5,labelHeight);
+
+    sliderWidth+=18;
+    OscAmpSlider.setBounds(noiseAmpSlider.getRight()+10,OctaveSlider.getBottom()+10,sliderWidth,(noiseAmpSlider.getHeight()-50));
+
+    NoiseLabel.setBounds(10,noiseAmpSlider.getBottom() + 5, sliderWidth-18, labelHeight);
+    OscAmpLabel.setBounds(spacing*2 + NoiseLabel.getWidth(),noiseAmpSlider.getBottom() + 5, sliderWidth, labelHeight);
+
 }
 
 void Oscillator::FillComboBox()
@@ -98,5 +143,4 @@ void Oscillator::FillComboBox()
     oscMenu.addItem("Sine", 1);
     oscMenu.addItem("Square", 2);
     oscMenu.addItem("Saw", 3);
-    // oscMenu.setSelectedId(1);
 }

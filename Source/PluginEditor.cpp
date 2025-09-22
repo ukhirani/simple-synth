@@ -53,8 +53,14 @@ void SimpleSynthAudioProcessorEditor::paint (juce::Graphics& g) {
 
     g.fillAll (juce::Colours::white);
     g.setColour (juce::Colours::black);
-    g.setFont (juce::FontOptions (15.0f));
+    g.setFont (juce::FontOptions (25.0f,Font::bold));
+
     g.drawRect(area,3);
+
+    int HeadingHeight = 20;
+
+
+    g.drawFittedText("SYNTH8", area.getX() + 15,area.getCentreY() - HeadingHeight/2 , 100, HeadingHeight,juce::Justification::centredLeft, 1);
 
 }
 
