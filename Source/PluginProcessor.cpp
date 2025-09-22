@@ -11,6 +11,10 @@
 
 
 //==============================================================================
+
+static inline double dbToGain(double db) {
+    return std::pow(10, db*0.05);
+}
 SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
      : juce::AudioProcessor (BusesProperties()
@@ -24,6 +28,7 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
 
                 //Noise Oscillator's processor tree state values
                    std::make_unique<juce::AudioParameterFloat>("noiseAmp", "Noise Amplitude", 0.0f, 1.0f, 0.0f),
+
                    std::make_unique<juce::AudioParameterFloat>("oscAmp", "Oscillator Amplitude", 0.0f, 1.0f, 0.5f),
                    std::make_unique<juce::AudioParameterInt>("oscOct", "Oscillator Octave", -3, 3, 0),
                    std::make_unique<juce::AudioParameterInt>("oscSemi", "Oscillator Semitone", -11, +11, 0),
@@ -32,7 +37,7 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
                    std::make_unique<juce::AudioParameterFloat>("decay", "Decay", 0.1f, 5000.0f, 100.0f),
                    std::make_unique<juce::AudioParameterFloat>("sustain", "Sustain", 0.1f, 5000.0f, 100.0f),
                    std::make_unique<juce::AudioParameterFloat>("release", "Release", 0.1f, 5000.0f, 100.0f),
-                   // Limit cutoff to a safe range well below Nyquist to avoid filter singularities
+
                    std::make_unique<juce::AudioParameterFloat>("frequency","Cutoff Frequency",20.0f,10000.0f,1000.0f),
                    std::make_unique<juce::AudioParameterFloat>("resonance","Filter Resonance",0.1f,10.0f,1.0f),
 
@@ -56,6 +61,12 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
                    std::make_unique<juce::AudioParameterFloat>("chorusDepth","Chorus Depth",2.0f,20.0f,15.0f),
                    std::make_unique<juce::AudioParameterFloat>("chorusDetune","Chorus Detune",1.0f,50.0f,8.0f),
                    std::make_unique<juce::AudioParameterFloat>("chorusStereo","Chorus Stereo",0.0f,1.5f,0.5f),
+
+                   std::make_unique<AudioParameterFloat>("inputGain","Pre Gain", dbToGain(-12), dbToGain(24),1),
+                   std::make_unique<AudioParameterFloat>("outputLimit","Output Limit", dbToGain(-24), 1,dbToGain(-12)),
+                   std::make_unique<AudioParameterFloat>("attackMs","Attack Ms" ,1,  20,10),
+                   std::make_unique<AudioParameterFloat>("holdMs", "Hold Ms",1,  20,10),
+                   std::make_unique<AudioParameterFloat>("releaseMs","Release Ms", 0,  250,10),
 
                    std::make_unique<AudioParameterChoice>("wavetype","WaveType",StringArray { "saw", "square", "saw" },0)
 
@@ -169,6 +180,12 @@ AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::createP
     params.push_back(std::make_unique<juce::AudioParameterFloat>("cuthz", "Cut Hz", 20, 500, 100));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("outgain", "Out Gain", stfx::units::dbToGain(-12), stfx::units::dbToGain(24), 1));
 
+    params.push_back(std::make_unique<AudioParameterFloat>("inputGain","Pre Gain", dbToGain(-12), dbToGain(24),1));
+    params.push_back(std::make_unique<AudioParameterFloat>("outputLimit","Output Limit", dbToGain(-24), 1,dbToGain(-12)));
+    params.push_back(std::make_unique<AudioParameterFloat>("attackMs","Attack Ms" ,1, 10, 20));
+    params.push_back(std::make_unique<AudioParameterFloat>("holdMs", "Hold Ms",1, 10, 20));
+    params.push_back(std::make_unique<AudioParameterFloat>("releaseMs","Release Ms", 0,  250,10));
+
     return { params.begin(), params.end() };
 }
 
@@ -268,6 +285,11 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
             myVoice->setChorusDetune(tree.getRawParameterValue("chorusDetune")->load());
             myVoice->setChorusStereo(tree.getRawParameterValue("chorusStereo")->load());
 
+            myVoice->setPreGain(tree.getRawParameterValue("inputGain")->load());
+            myVoice->setOutputLimit(tree.getRawParameterValue("outputLimit")->load());
+            myVoice->setAttackMS(tree.getRawParameterValue("attackMs")->load());
+            myVoice->setHoldMS(tree.getRawParameterValue("holdMs")->load());
+            myVoice->setReleaseMS(tree.getRawParameterValue("releaseMs")->load());
             
         }
     }

@@ -10,7 +10,7 @@ LimiterComponent::LimiterComponent(SimpleSynthAudioProcessor& p)
     initLimiterSlider(holdMsSlider);
     initLimiterSlider(releaseMsSlider);
 
-    initLimiterLabel("PRE-GAIN", inputGainLabel);
+    initLimiterLabel("PRE", inputGainLabel);
     initLimiterLabel("LIMIT", outputLimitLabel);
     initLimiterLabel("ATK", attackMsLabel);
     initLimiterLabel("HOLD", holdMsLabel);

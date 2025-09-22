@@ -221,6 +221,23 @@ public:
 
   }
 
+  void setPreGain(double preGain) {
+    limiter1.inputGain = preGain;
+  }
+  void setOutputLimit(double postGain) {
+    limiter1.outputLimit = postGain;
+  }
+  void setAttackMS(double attackMS1) {
+    limiter1.attackMs = attackMS1;
+  }
+  void setHoldMS(double holdMS1) {
+    limiter1.holdMs = holdMS1;
+  }
+  void setReleaseMS(double releaseMS1) {
+    limiter1.releaseMs = releaseMS1;
+  }
+
+
   void getOscType(atomic<float> * selection) {
      theWave = *selection;
   }
