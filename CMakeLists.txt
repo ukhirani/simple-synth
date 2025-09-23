@@ -90,9 +90,10 @@ target_sources(SimpleSynth PRIVATE
         ${MAXIMILIAN_SOURCES}
 )
 
-# Add include directory for Maximilian
+# Add include directory for Maximilian and stubs
 target_include_directories(SimpleSynth PRIVATE
         MaximilianDSP
+        basics/include
 )
 
 target_link_libraries(SimpleSynth PRIVATE
