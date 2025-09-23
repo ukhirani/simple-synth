@@ -129,9 +129,10 @@ jobs:
         
     - name: Install JUCE
       run: |
-        Invoke-WebRequest -Uri "https://github.com/juce-framework/JUCE/releases/download/8.0.8/juce-8.0.8-windows.zip" -OutFile "juce.zip"
-        Expand-Archive -Path "juce.zip" -DestinationPath "."
-        Move-Item "juce-8.0.8-windows" "JUCE"
+        git clone --depth 1 --branch 8.0.8 https://github.com/juce-framework/JUCE.git
+        if (!(Test-Path "JUCE")) {
+          git clone --depth 1 --branch 7.0.12 https://github.com/juce-framework/JUCE.git
+        }
     
     - name: Configure CMake
       run: |
@@ -146,10 +147,13 @@ jobs:
     - name: Package Windows Executable
       run: |
         mkdir -p artifacts
-        $exePath = Get-ChildItem -Path "build" -Recurse -Include "*.exe" | Where-Object { $_.Name -like "*SimpleSynth*" -and $_.Directory.Name -eq "Release" }
+        $exePath = Get-ChildItem -Path "build" -Recurse -Include "*.exe" | Where-Object { $_.Name -like "*SimpleSynth*" } | Select-Object -First 1
         if ($exePath) {
           Copy-Item $exePath.FullName "artifacts/SimpleSynth.exe"
+          Write-Host "Found executable: $($exePath.FullName)"
         } else {
+          Write-Host "Searching for any executables..."
+          Get-ChildItem -Path "build" -Recurse -Include "*.exe" | ForEach-Object { Write-Host $_.FullName }
           Write-Error "Standalone executable not found"
           exit 1
         }
@@ -262,9 +266,7 @@ jobs:
         
     - name: Install JUCE
       run: |
-        wget https://github.com/juce-framework/JUCE/releases/download/8.0.8/juce-8.0.8-linux.tar.gz
-        tar -xzf juce-8.0.8-linux.tar.gz
-        mv juce-8.0.8-linux JUCE
+        git clone --depth 1 --branch 8.0.8 https://github.com/juce-framework/JUCE.git || git clone --depth 1 --branch 7.0.12 https://github.com/juce-framework/JUCE.git
     
     - name: Configure CMake
       run: |
@@ -464,9 +466,7 @@ jobs:
         
     - name: Install JUCE
       run: |
-        curl -L -o juce.tar.gz https://github.com/juce-framework/JUCE/releases/download/8.0.8/juce-8.0.8-osx.tar.gz
-        tar -xzf juce.tar.gz
-        mv juce-8.0.8-osx JUCE
+        git clone --depth 1 --branch 8.0.8 https://github.com/juce-framework/JUCE.git || git clone --depth 1 --branch 7.0.12 https://github.com/juce-framework/JUCE.git
     
     - name: Configure CMake
       run: |
