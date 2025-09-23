@@ -8,6 +8,7 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "../basics/include/stfx/units.h"
 
 
 //==============================================================================
