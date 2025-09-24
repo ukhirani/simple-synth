@@ -164,6 +164,7 @@ public:
   void startNote(int midiNoteNumber, float velocity, SynthesiserSound *sound,int currentPitchWheelPosition) override {
 
     env1.trigger = 1;
+    // cout<<currentPitchWheelPosition<<endl;
 
     //velocity will be ranging from 0.0 to 1.0 so that is the float value that we are multiplying with the sound source's amplitude
     level = velocity;
@@ -185,7 +186,9 @@ public:
       clearCurrentNote();
     }
   }
-  void pitchWheelMoved(int newPitchWheelValue) override {}
+  void pitchWheelMoved(int newPitchWheelValue) override {
+    // cout<<newPitchWheelValue<<endl;
+  }
   void controllerMoved(int controllerNumber, int newControllerValue) override {}
   void renderNextBlock(AudioBuffer<float> &outputBuffer, int startSample, const int numSamples) override {
 
@@ -306,6 +309,7 @@ public:
   double filterResonance = 5.0f;
   double currSampleRate = 44100.0;
   int currBlockSize;
+  int pitchWheelValue = 8192;
 
   double level = 0.0;
 

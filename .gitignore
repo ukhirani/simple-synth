@@ -3,7 +3,6 @@
 /.cache
 /cmake-build-debug/
 ReferenceCodes/juceSynthFramework/
-basics/
 /cmake-build-release/
 /CMakeFiles/
 /JUCE/

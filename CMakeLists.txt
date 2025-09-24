@@ -7,7 +7,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Add JUCE as a subdirectory
 add_subdirectory("/home/ukhirani/Umang/SDKs and Paths/juce-8.0.8-linux/JUCE" JUCE)
 
-
 if(MSVC)
     # Disable specific warnings for MSVC
     add_compile_options(/W0)  # Disable all warnings
@@ -17,8 +16,6 @@ else()
     add_compile_options(-w)  # Disable all warnings
     # OR for specific warnings: -Wno-xxxx (e.g., -Wno-unused-variable)
 endif()
-
-
 
 # Use pkg-config to find GTK and Pango (and their dependencies)
 find_package(PkgConfig REQUIRED)
@@ -88,6 +85,7 @@ target_sources(SimpleSynth PRIVATE
         Source/Crunch.cpp
         Source/Chorus.cpp
         Source/Limiter.cpp
+        Source/PresetPanel.cpp
 )
 
 target_link_libraries(SimpleSynth PRIVATE
