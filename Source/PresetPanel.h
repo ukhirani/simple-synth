@@ -36,11 +36,13 @@
 			const auto container = getLocalBounds().reduced(4);
 			auto bounds = container;
 
-			saveButton.setBounds(bounds.removeFromLeft(container.proportionOfWidth(0.2f)).reduced(4));
-			previousPresetButton.setBounds(bounds.removeFromLeft(container.proportionOfWidth(0.1f)).reduced(4));
-			presetList.setBounds(bounds.removeFromLeft(container.proportionOfWidth(0.4f)).reduced(4));
-			nextPresetButton.setBounds(bounds.removeFromLeft(container.proportionOfWidth(0.1f)).reduced(4));
-			deleteButton.setBounds(bounds.reduced(4));
+			constexpr int padding = 3;
+
+			saveButton.setBounds(bounds.removeFromLeft(container.proportionOfWidth(0.1f)).reduced(padding));
+			previousPresetButton.setBounds(bounds.removeFromLeft(container.proportionOfWidth(0.05f)).reduced(padding));
+			presetList.setBounds(bounds.removeFromLeft(container.proportionOfWidth(0.3f)).reduced(padding));
+			nextPresetButton.setBounds(bounds.removeFromLeft(container.proportionOfWidth(0.05f)).reduced(padding));
+			deleteButton.setBounds(bounds.reduced(padding));
 		}
 	private:
 		void buttonClicked(Button* button) override
