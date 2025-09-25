@@ -1,51 +1,116 @@
 #pragma once
+#include "PresetManager.h"
 #include <JuceHeader.h>
-
-class PresetPanel : public juce::Component, Button::Listener,ComboBox::Listener{
-    public:
-    PresetPanel() {
-        configureButton(saveButton, "Save");
-        configureButton(deleteButton, "Delete");
-        configureButton(previousButton, "<");
-        configureButton(nextButton, ">");
-
-        presetList.setTextWhenNothingSelected("No Preset Selected");
-        presetList.setMouseCursor(MouseCursor::PointingHandCursor);
-        addAndMakeVisible(presetList);
-        presetList.addListener(this);
-    }
-    ~PresetPanel() {
-        saveButton.removeListener(this);
-        deleteButton.removeListener(this);
-        previousButton.removeListener(this);
-        nextButton.removeListener(this);
-        presetList.removeListener(this);
-    }
+#include "PluginProcessor.h"
 
 
-private:
-    TextButton saveButton,deleteButton,previousButton,nextButton;
-    ComboBox presetList;
+	class PresetPanel : public Component, Button::Listener, ComboBox::Listener
+	{
+	public:
+		PresetPanel(SimpleSynthAudioProcessor& p,Service::PresetManager& pm) : presetManager(pm)
+		{
+			configureButton(saveButton, "Save");
+			configureButton(deleteButton, "Delete");
+			configureButton(previousPresetButton, "<");
+			configureButton(nextPresetButton, ">");
 
-    void buttonClicked(Button*) override {
+			presetList.setTextWhenNothingSelected("No Preset Selected");
+			presetList.setMouseCursor(MouseCursor::PointingHandCursor);
+			addAndMakeVisible(presetList);
+			presetList.addListener(this);
 
-    }
-    void resized() override {
-        const Rectangle<int> container = getLocalBounds().reduced (4);
-        auto bounds = container;
-        saveButton.setBounds(bounds.removeFromLeft(container.proportionOfWidth(0.2f)).reduced(4));
-    }
-    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override {
+			loadPresetList();
+		}
 
-    }
-    void configureButton(Button& button,const String& buttonText) {
+		~PresetPanel()
+		{
+			saveButton.removeListener(this);
+			deleteButton.removeListener(this);
+			previousPresetButton.removeListener(this);
+			nextPresetButton.removeListener(this);
+			presetList.removeListener(this);
+		}
 
-        button.setButtonText(buttonText);
-        button.setMouseCursor(MouseCursor::PointingHandCursor);
-        addAndMakeVisible(button);
-        button.addListener(this);
-    }
+		void resized() override
+		{
+			const auto container = getLocalBounds().reduced(4);
+			auto bounds = container;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PresetPanel);
-};
+			saveButton.setBounds(bounds.removeFromLeft(container.proportionOfWidth(0.2f)).reduced(4));
+			previousPresetButton.setBounds(bounds.removeFromLeft(container.proportionOfWidth(0.1f)).reduced(4));
+			presetList.setBounds(bounds.removeFromLeft(container.proportionOfWidth(0.4f)).reduced(4));
+			nextPresetButton.setBounds(bounds.removeFromLeft(container.proportionOfWidth(0.1f)).reduced(4));
+			deleteButton.setBounds(bounds.reduced(4));
+		}
+	private:
+		void buttonClicked(Button* button) override
+		{
+			if (button == &saveButton)
+			{
+				fileChooser = std::make_unique<FileChooser>("Save Preset",
+					Service::PresetManager::defaultDirectory,
+					"*." + Service::PresetManager::extension,
+					true,  // warn about overwriting
+					false  // don't select multiple files
+				);
 
+				fileChooser->launchAsync(FileBrowserComponent::saveMode, 
+				[this](const FileChooser& chooser)
+				{
+					const auto result = chooser.getResult();
+					if (result.getFullPathName().isNotEmpty())
+					{
+						presetManager.savePreset(result.getFileNameWithoutExtension());
+						loadPresetList();
+					}
+					fileChooser.reset();
+				});
+			}
+			if (button == &previousPresetButton)
+			{
+				const auto index = presetManager.loadPreviousPreset();
+				presetList.setSelectedItemIndex(index, dontSendNotification);
+			}
+			if (button == &nextPresetButton)
+			{
+				const auto index = presetManager.loadNextPreset();
+				presetList.setSelectedItemIndex(index, dontSendNotification);
+			}
+			if (button == &deleteButton)
+			{
+				presetManager.deletePreset(presetManager.getCurrentPreset());
+				loadPresetList();
+			}
+		}
+		void comboBoxChanged(ComboBox* comboBoxThatHasChanged) override
+		{
+			if (comboBoxThatHasChanged == &presetList)
+			{
+				presetManager.loadPreset(presetList.getItemText(presetList.getSelectedItemIndex()));
+			}
+		}
+
+		void configureButton(Button& button, const String& buttonText)
+		{
+			button.setButtonText(buttonText);
+			button.setMouseCursor(MouseCursor::PointingHandCursor);
+			addAndMakeVisible(button);
+			button.addListener(this);
+		}
+
+		void loadPresetList()
+		{
+			presetList.clear(dontSendNotification);
+			const auto allPresets = presetManager.getAllPresets();
+			const auto currentPreset = presetManager.getCurrentPreset();
+			presetList.addItemList(allPresets, 1);
+			presetList.setSelectedItemIndex(allPresets.indexOf(currentPreset), dontSendNotification);
+		}
+
+		Service::PresetManager& presetManager;
+		TextButton saveButton, deleteButton, previousPresetButton, nextPresetButton;
+		ComboBox presetList;
+		std::unique_ptr<FileChooser> fileChooser;
+
+		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PresetPanel)
+	};

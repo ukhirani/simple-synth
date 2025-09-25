@@ -19,6 +19,7 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
       crunchComponent(p),
       chorusComponent(p),
       limiterComponent(p),
+      presetPanel(p,p.getPresetManger()),
       visualiserComponent(1)
 {
     // Set the editor's size
@@ -34,6 +35,7 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
     addAndMakeVisible(&crunchComponent);
     addAndMakeVisible(&chorusComponent);
     addAndMakeVisible(&limiterComponent);
+    addAndMakeVisible(&presetPanel);
 
     
     // Configure visualizer
@@ -57,10 +59,9 @@ void SimpleSynthAudioProcessorEditor::paint (juce::Graphics& g) {
 
     g.drawRect(area,2);
 
-    int HeadingHeight = 20;
 
 
-    g.drawFittedText("SYNTH8", area.getX(),area.getCentreY() - HeadingHeight/2 , area.getWidth(), HeadingHeight,juce::Justification::centred, 1);
+    // g.drawFittedText("SYNTH8", area.getX(),area.getCentreY() - HeadingHeight/2 , area.getWidth(), HeadingHeight,juce::Justification::centred, 1);
 
 }
 
@@ -69,6 +70,8 @@ void SimpleSynthAudioProcessorEditor::resized()
     area = getLocalBounds().removeFromTop(80).reduced(10);
 
     const int startY = area.getBottom();
+    constexpr int HeadingHeight = 20;
+
 
     oscComponent.setBounds(0,startY,250,280);
     envComponent.setBounds(oscComponent.getRight() - 10,startY,250,280);
@@ -78,6 +81,8 @@ void SimpleSynthAudioProcessorEditor::resized()
     reverbComponent.setBounds(chorusComponent.getRight(),oscComponent.getBottom() ,360,700);
     limiterComponent.setBounds(crunchComponent.getX(),oscComponent.getBottom() ,300,300);
     visualiserComponent.setBounds(getLocalBounds().removeFromBottom(160).reduced(10));
+    presetPanel.setBounds( area.getX(),area.getCentreY() - HeadingHeight- 5 , area.getWidth(), 50);
+
 
 
 

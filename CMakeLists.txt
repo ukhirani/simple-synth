@@ -86,6 +86,7 @@ target_sources(SimpleSynth PRIVATE
         Source/Chorus.cpp
         Source/Limiter.cpp
         Source/PresetPanel.cpp
+        Source/PresetManager.cpp
 )
 
 target_link_libraries(SimpleSynth PRIVATE

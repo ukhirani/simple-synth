@@ -72,7 +72,7 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
 
 
 
-               })
+               }),presetManager(tree)
 #endif
 {
     mySynth.clearVoices();

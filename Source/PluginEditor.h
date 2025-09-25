@@ -18,6 +18,7 @@
 #include "ReverbComponent.h"
 #include "Crunch.h"
 #include "Limiter.h"
+#include "PresetPanel.h"
 
 //==============================================================================
 /**
@@ -50,6 +51,8 @@ private:
     CrunchComponent crunchComponent;
     ChorusComponent chorusComponent;
     LimiterComponent limiterComponent;
+
+    PresetPanel presetPanel;
 
     Rectangle<int> area;
 

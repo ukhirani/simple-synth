@@ -10,7 +10,7 @@
 
 #include <JuceHeader.h>
 #include "SynthVoice.h"
-#include "../MaximilianDSP/maximilian.h"
+#include "PresetManager.h"
 
 
 
@@ -53,6 +53,8 @@ public:
     const juce::String getProgramName (int index) override;
     void changeProgramName (int index, const juce::String& newName) override;
 
+    Service::PresetManager& getPresetManger(){return presetManager;}
+
     //==============================================================================
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
@@ -69,6 +71,7 @@ private:
     // AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleSynthAudioProcessor)
+    Service::PresetManager presetManager;
     Synthesiser mySynth;
     SynthVoice* myVoice;
 
