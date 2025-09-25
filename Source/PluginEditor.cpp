@@ -55,20 +55,21 @@ void SimpleSynthAudioProcessorEditor::paint (juce::Graphics& g) {
 
     g.fillAll (juce::Colours::white);
     g.setColour (juce::Colours::black);
-    g.setFont (juce::FontOptions (25.0f,Font::bold));
+    g.setFont (juce::FontOptions (23.0f,Font::bold));
     constexpr int  HeadingHeight = 20;
 
     // g.drawRect(area,2);
+    // ;
 
 
 
-    g.drawFittedText("SYNTH8", area.getX() + 15 ,area.getCentreY() - HeadingHeight/2 , area.getWidth(), HeadingHeight,juce::Justification::centredLeft, 1);
+    g.drawFittedText("SIMPLESYNTH", area.getX(),area.getCentreY() - HeadingHeight/2 , area.getWidth(), HeadingHeight,juce::Justification::centredLeft, 1);
 
 }
 
 void SimpleSynthAudioProcessorEditor::resized()
 {
-    area = getLocalBounds().removeFromTop(80).reduced(10);
+    area = getLocalBounds().removeFromTop(50).reduced(10);
 
     const int startY = area.getBottom();
     constexpr int HeadingHeight = 20;
@@ -82,8 +83,8 @@ void SimpleSynthAudioProcessorEditor::resized()
     chorusComponent.setBounds(0,oscComponent.getBottom() ,240,700);
     reverbComponent.setBounds(chorusComponent.getRight(),oscComponent.getBottom() ,360,700);
     limiterComponent.setBounds(crunchComponent.getX(),oscComponent.getBottom() ,300,300);
-    visualiserComponent.setBounds(getLocalBounds().removeFromBottom(160).reduced(10));
-    presetPanel.setBounds( area.getX() + offset ,area.getCentreY() - HeadingHeight- 5 , area.getWidth() - offset, 50);
+    visualiserComponent.setBounds(getLocalBounds().removeFromBottom(190).reduced(10));
+    presetPanel.setBounds( area.getX() + offset*2 - 45 ,area.getCentreY() - 20 , area.getWidth() - offset*3, 40);
 
 
 

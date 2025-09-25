@@ -20,6 +20,32 @@
 			presetList.addListener(this);
 
 			loadPresetList();
+
+
+			presetList.setColour(ComboBox::ColourIds::backgroundColourId, Colours::white);
+			presetList.setColour(ComboBox::ColourIds::textColourId		, Colours::black);
+			presetList.setColour(ComboBox::ColourIds::outlineColourId	, Colours::black);
+			presetList.setColour(ComboBox::ColourIds::buttonColourId	, Colours::black);
+			presetList.setColour(ComboBox::ColourIds::arrowColourId		, Colours::black);
+			presetList.setColour(ComboBox::ColourIds::focusedOutlineColourId , Colours::black);
+
+			changeButtonUI(&saveButton);
+			changeButtonUI(&deleteButton);
+			changeButtonUI(&previousPresetButton);
+			changeButtonUI(&nextPresetButton);
+
+
+
+
+
+
+
+
+
+
+
+
+
 		}
 
 		~PresetPanel()
@@ -31,6 +57,13 @@
 			presetList.removeListener(this);
 		}
 
+		static void changeButtonUI(TextButton* button) {
+			button->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
+			button->setColour(TextButton::ColourIds::textColourOffId, Colours::black);
+		}
+
+
+
 		void resized() override
 		{
 			const auto container = getLocalBounds().reduced(4);
@@ -38,11 +71,11 @@
 
 			constexpr int padding = 3;
 
-			saveButton.setBounds(bounds.removeFromLeft(container.proportionOfWidth(0.1f)).reduced(padding));
+			saveButton.setBounds(bounds.removeFromLeft(container.proportionOfWidth(0.2f)).reduced(padding));
 			previousPresetButton.setBounds(bounds.removeFromLeft(container.proportionOfWidth(0.05f)).reduced(padding));
-			presetList.setBounds(bounds.removeFromLeft(container.proportionOfWidth(0.3f)).reduced(padding));
+			presetList.setBounds(bounds.removeFromLeft(container.proportionOfWidth(0.5f)).reduced(padding));
 			nextPresetButton.setBounds(bounds.removeFromLeft(container.proportionOfWidth(0.05f)).reduced(padding));
-			deleteButton.setBounds(bounds.reduced(padding));
+			deleteButton.setBounds(bounds.removeFromLeft(container.proportionOfWidth(0.2f)).reduced(padding));
 		}
 	private:
 		void buttonClicked(Button* button) override

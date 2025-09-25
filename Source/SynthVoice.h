@@ -49,15 +49,6 @@ public:
 
     //init Limiter
 
-
-
-
-
-
-
-
-
-
   }
   double getNoise(bool NoiseFlag) {
     return noise_amplitude * noise1.noise();
@@ -131,31 +122,24 @@ public:
   void setRT20(double rt201) {
     reverb1.rt20 = rt201;
   }
-
   void setChorusMix(double chorusMix1) {
     chorus1.mix = chorusMix1;
   }
-
   void setChorusDepth(double chorusDepth1) {
     chorus1.depthMs = chorusDepth1;
   }
-
   void setChorusDetune(double chorusDetune1) {
     chorus1.detune = chorusDetune1;
   }
-
   void setChorusStereo(double chorusStereo1) {
     chorus1.stereo = chorusStereo1;
   }
-
   void setOscAmp(double oscAmp1) {
     oscAmp = oscAmp1;
   }
-
   void setOctave (int octave) {
     oscOct = octave;
   }
-
   void setSemitone (int semitone) {
     oscSemi = semitone;
   }
@@ -187,7 +171,10 @@ public:
     }
   }
   void pitchWheelMoved(int newPitchWheelValue) override {
-    // cout<<newPitchWheelValue<<endl;
+    // newPitchWheelValue<<endl;
+
+    // pitchWheelValue = (newPitchWheelValue - 8192.0) * (pitchBendRange / 8192.0);
+    // cout<<pitchWheelValue<<endl;
   }
   void controllerMoved(int controllerNumber, int newControllerValue) override {}
   void renderNextBlock(AudioBuffer<float> &outputBuffer, int startSample, const int numSamples) override {
@@ -224,21 +211,11 @@ public:
 
   }
 
-  void setPreGain(double preGain) {
-    limiter1.inputGain = preGain;
-  }
-  void setOutputLimit(double postGain) {
-    limiter1.outputLimit = postGain;
-  }
-  void setAttackMS(double attackMS1) {
-    limiter1.attackMs = attackMS1;
-  }
-  void setHoldMS(double holdMS1) {
-    limiter1.holdMs = holdMS1;
-  }
-  void setReleaseMS(double releaseMS1) {
-    limiter1.releaseMs = releaseMS1;
-  }
+  void setPreGain(double preGain) {limiter1.inputGain = preGain;}
+  void setOutputLimit(double postGain) {limiter1.outputLimit = postGain;}
+  void setAttackMS(double attackMS1) {limiter1.attackMs = attackMS1;}
+  void setHoldMS(double holdMS1) {limiter1.holdMs = holdMS1;}
+  void setReleaseMS(double releaseMS1) {limiter1.releaseMs = releaseMS1;}
 
 
   void getOscType(atomic<float> * selection) {
