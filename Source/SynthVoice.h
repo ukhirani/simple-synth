@@ -149,6 +149,7 @@ public:
 
     env1.trigger = 1;
     // cout<<currentPitchWheelPosition<<endl;
+    cout<<midiNoteNumber<<endl;
 
     //velocity will be ranging from 0.0 to 1.0 so that is the float value that we are multiplying with the sound source's amplitude
     level = velocity;

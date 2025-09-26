@@ -39,7 +39,9 @@ public:
         visualiserComponent.pushSample(&sample, 1);
     }
 
+
 private:
+
 
     SimpleSynthAudioProcessor& processor;
     Oscillator oscComponent;
@@ -52,6 +54,9 @@ private:
     LimiterComponent limiterComponent;
 
     PresetPanel presetPanel;
+
+
+
 
     Rectangle<int> area;
 

@@ -1,13 +1,31 @@
-//
-// Created by ukhirani on 9/26/25.
-//
+#pragma once
 
-#ifndef SIMPLESYNTH_BYPASSCOMPONENT_H
-#define SIMPLESYNTH_BYPASSCOMPONENT_H
+#include <JuceHeader.h>
+#include "PluginProcessor.h"
+
+//==============================================================================
+/*
+*/
+class BypassComponent  : public juce::Component
+{
+public:
+    BypassComponent(SimpleSynthAudioProcessor&);
+    ~BypassComponent() override;
+
+    void changeButtonUI(TextButton* button) {
+        addAndMakeVisible(button);
+        button->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
+        button->setColour(TextButton::ColourIds::textColourOffId, Colours::black);
+    }
+
+    void paint (juce::Graphics&) override;
+    void resized() override;
 
 
-class BypassComponent {
+
+private:
+    SimpleSynthAudioProcessor& processor;
+    TextButton toggleReverb,toggleCrunch,toggleChorus,toggleLimiter;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BypassComponent)
 };
-
-
-#endif //SIMPLESYNTH_BYPASSCOMPONENT_H

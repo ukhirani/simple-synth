@@ -20,7 +20,7 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
       chorusComponent(p),
       limiterComponent(p),
       presetPanel(p,p.getPresetManger()),
-      visualiserComponent(1)
+      visualiserComponent(2)
 {
     // Set the editor's size
     setSize (910, 770);
@@ -36,6 +36,9 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
     addAndMakeVisible(&chorusComponent);
     addAndMakeVisible(&limiterComponent);
     addAndMakeVisible(&presetPanel);
+
+
+
 
     
     // Configure visualizer
@@ -58,8 +61,7 @@ void SimpleSynthAudioProcessorEditor::paint (juce::Graphics& g) {
     g.setFont (juce::FontOptions (23.0f,Font::bold));
     constexpr int  HeadingHeight = 20;
 
-    // g.drawRect(area,2);
-    // ;
+
 
 
 
@@ -85,6 +87,8 @@ void SimpleSynthAudioProcessorEditor::resized()
     limiterComponent.setBounds(crunchComponent.getX(),oscComponent.getBottom() ,300,300);
     visualiserComponent.setBounds(getLocalBounds().removeFromBottom(190).reduced(10));
     presetPanel.setBounds( area.getX() + offset*2 - 45 ,area.getCentreY() - 20 , area.getWidth() - offset*3, 40);
+
+    // toggleCrunch.setBounds(presetPanel.getRight(),10,75,10);
 
 
 

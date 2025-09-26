@@ -35,9 +35,6 @@ ReverbComponent::ReverbComponent(SimpleSynthAudioProcessor& p) : processor(p)
     ReverbLabel.setFont(FontOptions(15.0f,Font::bold));
 
 
-
-
-
     wetSliderAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "reverbWet", wetSlider);
     drySliderAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "reverbDry", drySlider);
     roomMsSliderAttachment = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.tree, "roomMs", RoomMsSlider);
