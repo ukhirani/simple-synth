@@ -41,7 +41,7 @@ Oscillator::Oscillator(SimpleSynthAudioProcessor& p):processor(p)
     addAndMakeVisible(&noiseAmpSlider);
 
     OctaveSlider.setSliderStyle(Slider::SliderStyle::IncDecButtons);
-    OctaveSlider.setRange(-3,+3,1);
+    OctaveSlider.setRange(-3,+3,1);//TODO: use enums or pre-processor
     OctaveSlider.setColour(Slider::textBoxTextColourId, juce::Colours::black);
     addAndMakeVisible(&OctaveSlider);
 

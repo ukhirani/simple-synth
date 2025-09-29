@@ -49,7 +49,7 @@ private:
     Label rt20Label;
 
     Label ReverbLabel;
-    
+    //JUCE==freeware
 
     std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> wetSliderAttachment;
     std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> drySliderAttachment;

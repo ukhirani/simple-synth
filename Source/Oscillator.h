@@ -28,8 +28,8 @@ private:
     Slider noiseAmpSlider;
     Label NoiseLabel;
 
-    Label OctaveLabel,SemiToneLabel,OscAmpLabel;    //TODO: make both sliders and labels visible
-    Slider OctaveSlider,SemiToneSlider,OscAmpSlider; //TODO: make processor-value-tree-state and attach sliders to it
+    Label OctaveLabel,SemiToneLabel,OscAmpLabel;
+    Slider OctaveSlider,SemiToneSlider,OscAmpSlider;
 
     SimpleSynthAudioProcessor& processor;
     std::unique_ptr<AudioProcessorValueTreeState::ComboBoxAttachment> waveSelection;

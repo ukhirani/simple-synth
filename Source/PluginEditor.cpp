@@ -37,9 +37,6 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
     addAndMakeVisible(&limiterComponent);
     addAndMakeVisible(&presetPanel);
 
-
-
-
     
     // Configure visualizer
     visualiserComponent.setBufferSize(64);

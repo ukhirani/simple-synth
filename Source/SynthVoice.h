@@ -9,6 +9,7 @@
 */
 
 #pragma once
+#include <types.h>
 
 
 #include <ranges>
@@ -60,7 +61,7 @@ public:
       sum+=summation[i];
     }
     return sum;
-  }
+  }//TODO: apply operator overloading of + function where we add sound
 
   bool canPlaySound(SynthesiserSound *sound) override {
     // it will return true only if the cast is successful otherwise false.
@@ -71,8 +72,18 @@ public:
 
   }
 
+  //Node* hello = new Node(nullptr); //reference
+  //hello->// to make it easy for pointer management
+
+  //Node n = new Node();
+
+
+
   void setDecay(double decay) {
     env1.setDecay(decay);
+    //precise value to 2 decimal forms and not round off
+    //verify display error (is backend value exactly on the UI)
+    //popup for precise value showing
   }
 
   void setSustain(const double sustain) {
@@ -166,7 +177,6 @@ public:
   void stopNote(float velocity, bool allowTailOff) override {
 
     env1.trigger = 0;
-    allowTailOff = true;
     if (velocity == 0) {
       clearCurrentNote();
     }
@@ -182,13 +192,15 @@ public:
 
     // First, generate all the samples
     for (int i = 0; i < numSamples; i++) {
-      double theSound = env1.adsr(setOscType(), env1.trigger) * level * oscAmp;
+      double theSound = env1.adsr(setOscType(), env1.trigger) * level * oscAmp; //TODO: don't use hardcoded values, use getter setter functions
       double theNoise = env1.adsr(getNoise(NoiseFlag), env1.trigger);
 
       vector<double> summation = vector<double>();
 
       summation.push_back(theSound);
       summation.push_back(theNoise);
+
+      //complete reference C++ --> ch 19,20 || comparable & comparators (java concept)
 
       double theSum = env1.adsr(getSum(summation), env1.trigger);
       float filteredSound = filter1.lores(theSum, cutoffFrequency, filterResonance);
@@ -252,7 +264,7 @@ public:
   }
 
   double setOscType() {
-    if (theWave == 0) {
+    if (theWave == 0) {//TODO: use enums instead of hardcoding values
       return osc1.sinewave(frequency);
     }
     if (theWave == 1) {
@@ -290,7 +302,7 @@ public:
   int pitchWheelValue = 8192;
 
   double level = 0.0;
-
+  //TODO: friend function && RTBI already implemented
   //================================== here goes all the signalsmith's stuff =========================================
   signalsmith::basics::ReverbFloat reverb1;
   signalsmith::basics::CrunchFloat crunch1;
