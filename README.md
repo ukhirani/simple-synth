@@ -1,5 +1,7 @@
 # Simple Synth
 
+<img width="1591" height="1349" alt="image" src="https://github.com/user-attachments/assets/1e1b8163-19be-4fbc-b21f-30a47994fb2b" />
+
 A minimal, powerful audio synthesizer with a clean interface.
 
 ## Features
