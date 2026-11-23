@@ -1,0 +1,60 @@
+{
+  "name": "industrial",
+  "like": "neutral",
+  "mode": "dark-only",
+  "settings": [
+    {
+      "thing": "corners",
+      "value": "square",
+      "source": "dial"
+    },
+    {
+      "thing": "font",
+      "value": "ibm-plex-sans",
+      "source": "dial"
+    },
+    {
+      "thing": "font",
+      "value": "ibm-plex-mono",
+      "source": "dial",
+      "on": "heading"
+    },
+    {
+      "thing": "font",
+      "value": "ibm-plex-mono",
+      "source": "dial",
+      "on": "code"
+    },
+    {
+      "thing": "accent",
+      "value": "#FF5A1F",
+      "source": "dial"
+    },
+    {
+      "thing": "neutral",
+      "value": "#71767D",
+      "source": "dial"
+    },
+    {
+      "thing": "--radius-full",
+      "value": "0px",
+      "source": "token"
+    },
+    {
+      "thing": "background-color",
+      "value": "#ff794a",
+      "source": "property",
+      "on": "progress-bar-fill",
+      "mode": "dark"
+    },
+    {
+      "thing": "background-color",
+      "value": "#3a3e43",
+      "source": "property",
+      "on": "progress-bar-track",
+      "mode": "dark"
+    }
+  ],
+  "lifted": [],
+  "palette": "c4c654fa956c081c4103dded3075a590cd185db2878c11b34bc885a8f2751081"
+}

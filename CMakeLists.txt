@@ -1,102 +1,91 @@
-cmake_minimum_required(VERSION 3.15)
-project(SimpleSynth VERSION 0.1.0)
+cmake_minimum_required(VERSION 3.22)
+
+# Single source of truth for the release version. CI reads this line to name
+# the GitHub release (vX.Y.Z), so bump it here to publish a new version.
+project(SimpleSynth VERSION 0.2.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Add JUCE as a subdirectory
-add_subdirectory("/home/ukhirani/Umang/SDKs and Paths/juce-8.0.8-linux/JUCE" JUCE)
-
-if(MSVC)
-    # Disable specific warnings for MSVC
-    add_compile_options(/W0)  # Disable all warnings
-    # OR for specific warnings: /wd#### (replace #### with warning number)
-else()
-    # For GCC/Clang
-    add_compile_options(-w)  # Disable all warnings
-    # OR for specific warnings: -Wno-xxxx (e.g., -Wno-unused-variable)
+if(APPLE)
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "11.0" CACHE STRING "Minimum macOS version")
 endif()
 
-# Use pkg-config to find GTK and Pango (and their dependencies)
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
-pkg_check_modules(WEBKIT2GTK REQUIRED webkit2gtk-4.0)
-find_package(CURL REQUIRED)
+if(MSVC)
+    # Static runtime so the standalone .exe runs without the VC++ redistributable.
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+endif()
 
-include_directories(${GTK3_INCLUDE_DIRS} ${WEBKIT2GTK_INCLUDE_DIRS})
+# ---------------------------------------------------------------------------
+# JUCE
+#   -DJUCE_SOURCE_DIR=/path/to/JUCE  use a local checkout
+#   (default)                         fetch JUCE 8.0.8 from GitHub
+# ---------------------------------------------------------------------------
+set(JUCE_SOURCE_DIR "" CACHE PATH "Path to a local JUCE checkout (optional)")
 
-## Add include and link flags for GTK and Pango
-#include_directories(${GTK3_INCLUDE_DIRS} ${PANGO_INCLUDE_DIRS})
-#link_directories(${GTK3_LIBRARY_DIRS} ${PANGO_LIBRARY_DIRS})
-#add_definitions(${GTK3_CFLAGS_OTHER} ${PANGO_CFLAGS_OTHER})
+if(JUCE_SOURCE_DIR)
+    add_subdirectory("${JUCE_SOURCE_DIR}" JUCE EXCLUDE_FROM_ALL)
+else()
+    include(FetchContent)
+    FetchContent_Declare(JUCE
+        GIT_REPOSITORY https://github.com/juce-framework/JUCE.git
+        GIT_TAG 8.0.8
+        GIT_SHALLOW TRUE)
+    FetchContent_MakeAvailable(JUCE)
+endif()
 
-# JUCE plugin target
+# Formats: VST3 + Standalone everywhere, AU on macOS.
+set(SIMPLESYNTH_FORMATS VST3 Standalone)
+if(APPLE)
+    list(APPEND SIMPLESYNTH_FORMATS AU)
+endif()
+
 juce_add_plugin(SimpleSynth
-        COMPANY_NAME "SYNTH8"
-        PLUGIN_MANUFACTURER_CODE Juce
-        PLUGIN_CODE SIMP
-        FORMATS VST3 Standalone
-        PRODUCT_NAME "SimpleSynth"
-        IS_SYNTH TRUE
-        
-        
-        # Add more options as needed
-)
+    VERSION                  ${PROJECT_VERSION}
+    COMPANY_NAME             "SYNTH8"
+    PLUGIN_MANUFACTURER_CODE Juce
+    PLUGIN_CODE              SIMP
+    FORMATS                  ${SIMPLESYNTH_FORMATS}
+    PRODUCT_NAME             "SimpleSynth"
+    IS_SYNTH                 TRUE
+    NEEDS_MIDI_INPUT         TRUE
+    NEEDS_MIDI_OUTPUT        FALSE
+    IS_MIDI_EFFECT           FALSE
+    EDITOR_WANTS_KEYBOARD_FOCUS FALSE
+    COPY_PLUGIN_AFTER_BUILD  FALSE
+    VST3_CATEGORIES          Instrument Synth
+    AU_MAIN_TYPE             kAudioUnitType_MusicDevice)
 
-# Generate JuceHeader.h for this target
 juce_generate_juce_header(SimpleSynth)
 
-#target_sources(SimpleSynth PRIVATE
-#        Source/PluginProcessor.cpp
-#        Source/PluginEditor.cpp
-#)
+file(GLOB SYNTH_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/Source/*.cpp")
 
-
-# Collect all .cpp files from the 'Source' directory
-file(GLOB SYNTH_SOURCES "Source/*.cpp")
-
-# Add Maximilian sources
-set(MAXIMILIAN_SOURCES
-        MaximilianDSP/maximilian.cpp
-)
-
-# Add the collected sources to the target
-target_sources(SimpleSynth PRIVATE
-        ${SYNTH_SOURCES}
-        ${MAXIMILIAN_SOURCES}
-)
-
-# Add include directory for Maximilian
-target_include_directories(SimpleSynth PRIVATE
-        MaximilianDSP
-)
-
-# Add the collected sources to the target
 target_sources(SimpleSynth PRIVATE
     ${SYNTH_SOURCES}
-)
+    MaximilianDSP/maximilian.cpp)
 
+target_include_directories(SimpleSynth PRIVATE
+    MaximilianDSP
+    Source)
 
-target_sources(SimpleSynth PRIVATE
-        Source/Oscillator.cpp
-        Source/Envelope.cpp
-        Source/Filter.cpp
-        Source/ReverbComponent.cpp
-        Source/Crunch.cpp
-        Source/Chorus.cpp
-        Source/Limiter.cpp
-        Source/PresetPanel.cpp
-        Source/PresetManager.cpp
-)
+target_compile_definitions(SimpleSynth PUBLIC
+    JUCE_WEB_BROWSER=0
+    JUCE_USE_CURL=0
+    JUCE_VST3_CAN_REPLACE_VST2=0
+    JUCE_DISPLAY_SPLASH_SCREEN=0
+    _USE_MATH_DEFINES)
 
-target_link_libraries(SimpleSynth PRIVATE
+if(MSVC)
+    target_compile_options(SimpleSynth PRIVATE /W0 /bigobj /utf-8)
+else()
+    target_compile_options(SimpleSynth PRIVATE -w)
+endif()
+
+target_link_libraries(SimpleSynth
+    PRIVATE
         juce::juce_audio_utils
         juce::juce_audio_processors
         juce::juce_dsp
-        ${GTK3_LIBRARIES}
-        ${PANGO_LIBRARIES}
-        ${CURL_LIBRARIES}
-        # Add more JUCE modules as needed
-)
-
-
+    PUBLIC
+        juce::juce_recommended_config_flags
+        juce::juce_recommended_lto_flags)

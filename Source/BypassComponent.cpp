@@ -36,7 +36,7 @@ void BypassComponent::resized()
 
     toggleCrunch.setBounds(startX,startY,labelWidth,labelHeight);
     toggleChorus.setBounds(startX + spacing + labelWidth,startY,labelWidth ,labelHeight);
-    toggleReverb.setBounds();
+    toggleReverb.setBounds(startX, startY + labelHeight + spacing, labelWidth, labelHeight);
     toggleLimiter.setBounds(startX + spacing + labelWidth,startY + labelHeight + spacing,labelWidth,labelHeight);
 
 

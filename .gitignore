@@ -6,3 +6,7 @@ ReferenceCodes/juceSynthFramework/
 /cmake-build-release/
 /CMakeFiles/
 /JUCE/
+/website/node_modules/
+/website/dist/
+/website/themes/*/*.png
+/website/themes/*/*.html
