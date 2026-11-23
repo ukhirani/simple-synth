@@ -43,7 +43,7 @@ void SimpleSynthAudioProcessorEditor::parentHierarchyChanged()
 {
     // Repaint the standalone window chrome with the new default LookAndFeel.
     if (auto* top = getTopLevelComponent(); top != nullptr && top != this)
-        top->sendLookAndFeelChange();
+        top->repaint();
 }
 
 void SimpleSynthAudioProcessorEditor::paint (juce::Graphics& g)

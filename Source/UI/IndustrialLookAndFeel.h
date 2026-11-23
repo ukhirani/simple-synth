@@ -50,5 +50,7 @@ public:
                         bool isScrollbarVertical, int thumbStartPosition, int thumbSize,
                         bool isMouseOver, bool isMouseDown) override;
 
+    juce::Button* createDocumentWindowButton (int buttonType) override;
+
     void drawTooltip (juce::Graphics&, const juce::String& text, int width, int height) override;
 };

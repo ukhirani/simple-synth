@@ -303,3 +303,53 @@ void IndustrialLookAndFeel::drawTooltip (Graphics& g, const String& text, int wi
     g.setFont (ui::mono (11.0f));
     g.drawFittedText (text, Rectangle<int> (width, height).reduced (6, 2), Justification::centredLeft, 3);
 }
+
+//==============================================================================
+namespace
+{
+    // Monochrome title-bar button: a hard glyph that turns white on hover.
+    class WindowButton : public Button
+    {
+    public:
+        WindowButton (const String& name, Path glyph) : Button (name), shape (std::move (glyph)) {}
+
+        void paintButton (Graphics& g, bool isOver, bool isDown) override
+        {
+            if (isOver || isDown)
+            {
+                g.setColour (ui::colour::raised);
+                g.fillRect (getLocalBounds());
+            }
+
+            const auto area = getLocalBounds().toFloat().withSizeKeepingCentre (10.0f, 10.0f);
+            g.setColour (isOver ? ui::colour::text : ui::colour::textDim);
+            g.strokePath (shape, PathStrokeType (1.25f, PathStrokeType::mitered, PathStrokeType::square),
+                          shape.getTransformToScaleToFit (area, true));
+        }
+
+    private:
+        Path shape;
+    };
+}
+
+Button* IndustrialLookAndFeel::createDocumentWindowButton (int buttonType)
+{
+    Path p;
+
+    if (buttonType == DocumentWindow::closeButton)
+    {
+        p.startNewSubPath (0.0f, 0.0f); p.lineTo (1.0f, 1.0f);
+        p.startNewSubPath (1.0f, 0.0f); p.lineTo (0.0f, 1.0f);
+        return new WindowButton ("close", p);
+    }
+
+    if (buttonType == DocumentWindow::minimiseButton)
+    {
+        p.startNewSubPath (0.0f, 1.0f); p.lineTo (1.0f, 1.0f);
+        p.startNewSubPath (0.0f, 0.0f); // keep the glyph's box square
+        return new WindowButton ("minimise", p);
+    }
+
+    p.addRectangle (0.0f, 0.0f, 1.0f, 1.0f);
+    return new WindowButton ("maximise", p);
+}
