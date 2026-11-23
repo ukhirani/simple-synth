@@ -33,7 +33,7 @@ jobs:
             os: ubuntu-22.04
             asset: SimpleSynth-Linux-x64.tar.gz
           - name: macOS Universal
-            os: macos-14
+            os: macos-latest
             asset: SimpleSynth-macOS-Universal.zip
           - name: Windows x64
             os: windows-2022
