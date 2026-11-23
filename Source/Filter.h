@@ -2,33 +2,13 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
+#include "UI/Controls.h"
 
-//==============================================================================
-/*
-*/
-class Filter  : public juce::Component
+class Filter : public ui::KnobModule
 {
 public:
-    Filter(SimpleSynthAudioProcessor&);
-    ~Filter() override;
-
-    void paint (juce::Graphics&) override;
-    void resized() override;
+    explicit Filter (SimpleSynthAudioProcessor&);
 
 private:
-
-    std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> FrequencyAttachment;
-    std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> ResonanceAttachment;
-
-
-    Slider FrequencySlider;
-    Label FrequencyLabel;
-
-    Slider ResonanceSlider;
-    Label ResonanceLabel;
-
-    Label FilterLabel;
-
-    SimpleSynthAudioProcessor& processor;
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Filter)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Filter)
 };

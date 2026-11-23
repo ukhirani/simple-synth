@@ -33,26 +33,26 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
                    std::make_unique<juce::AudioParameterInt>("oscOct", "Oscillator Octave", -3, 3, 0),
                    std::make_unique<juce::AudioParameterInt>("oscSemi", "Oscillator Semitone", -11, +11, 0),
 
-                   std::make_unique<juce::AudioParameterFloat>("attack", "Attack", 0.1f, 5000.0f, 100.0f),
-                   std::make_unique<juce::AudioParameterFloat>("decay", "Decay", 0.1f, 5000.0f, 100.0f),
+                   std::make_unique<juce::AudioParameterFloat>("attack", "Attack", juce::NormalisableRange<float>(0.1f, 5000.0f, 0.0f, 0.3f), 100.0f),
+                   std::make_unique<juce::AudioParameterFloat>("decay", "Decay", juce::NormalisableRange<float>(0.1f, 5000.0f, 0.0f, 0.3f), 100.0f),
                    std::make_unique<juce::AudioParameterFloat>("sustain", "Sustain", 0.1f, 5000.0f, 100.0f),
-                   std::make_unique<juce::AudioParameterFloat>("release", "Release", 0.1f, 5000.0f, 100.0f),
+                   std::make_unique<juce::AudioParameterFloat>("release", "Release", juce::NormalisableRange<float>(0.1f, 5000.0f, 0.0f, 0.3f), 100.0f),
 
-                   std::make_unique<juce::AudioParameterFloat>("frequency","Cutoff Frequency",20.0f,10000.0f,1000.0f),
+                   std::make_unique<juce::AudioParameterFloat>("frequency","Cutoff Frequency",juce::NormalisableRange<float>(20.0f,10000.0f,0.0f,0.3f),1000.0f),
                    std::make_unique<juce::AudioParameterFloat>("resonance","Filter Resonance",0.1f,10.0f,1.0f),
 
                    // Reverb Component's processor tree state values
                    std::make_unique<juce::AudioParameterFloat>("reverbWet","Reverb Wet",0.0f,1.0f,0.3f),
                    std::make_unique<juce::AudioParameterFloat>("reverbDry","Reverb Dry",0.0f,1.0f,1.0f),
-                   std::make_unique<juce::AudioParameterFloat>("roomMs","Room Ms",0.1f,10000.0f,500.0f),
-                   std::make_unique<juce::AudioParameterFloat>("lowCutoffFrequency","Low Cutoff Frequency",20.0f,10000.0f,200.0f),
-                   std::make_unique<juce::AudioParameterFloat>("highCutoffFrequency","High Cutoff Frequency",20.0f,10000.0f,2000.0f),
+                   std::make_unique<juce::AudioParameterFloat>("roomMs","Room Ms",juce::NormalisableRange<float>(0.1f,10000.0f,0.0f,0.3f),500.0f),
+                   std::make_unique<juce::AudioParameterFloat>("lowCutoffFrequency","Low Cutoff Frequency",juce::NormalisableRange<float>(20.0f,10000.0f,0.0f,0.3f),200.0f),
+                   std::make_unique<juce::AudioParameterFloat>("highCutoffFrequency","High Cutoff Frequency",juce::NormalisableRange<float>(20.0f,10000.0f,0.0f,0.3f),2000.0f),
                    std::make_unique<juce::AudioParameterFloat>("rt20","RT20",0.0f,10000.0f,0.0f),
 
                    //Distortion Component's processor tree state values
                    std::make_unique<juce::AudioParameterFloat>("fuzz","Fuzz",0.0f,1.0f,0.5f),
                    std::make_unique<juce::AudioParameterFloat>("drive", "Drive", stfx::units::dbToGain(-12), stfx::units::dbToGain(40), 4),
-                   std::make_unique<juce::AudioParameterFloat>("tonehz", "Tone Hz", 100, 20000, 4000),
+                   std::make_unique<juce::AudioParameterFloat>("tonehz", "Tone Hz", juce::NormalisableRange<float>(100.0f, 20000.0f, 0.0f, 0.3f), 4000.0f),
                    std::make_unique<juce::AudioParameterFloat>("cuthz", "Cut Hz", 20, 500, 100),
                    std::make_unique<juce::AudioParameterFloat>("outgain", "Out Gain", stfx::units::dbToGain(-12), stfx::units::dbToGain(24), 1),
 
@@ -68,7 +68,7 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
                    std::make_unique<AudioParameterFloat>("holdMs", "Hold Ms",1,  20,10),
                    std::make_unique<AudioParameterFloat>("releaseMs","Release Ms", 0,  250,10),
 
-                   std::make_unique<AudioParameterChoice>("wavetype","WaveType",StringArray { "saw", "square", "saw" },0)
+                   std::make_unique<AudioParameterChoice>("wavetype","WaveType",StringArray { "Sine", "Square", "Saw" },0)
 
 
 
@@ -298,20 +298,14 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     buffer.clear();
     mySynth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
 
-    // Send audio data to the visualizer if the editor is open
-    if (auto* editor = dynamic_cast<SimpleSynthAudioProcessorEditor*>(getActiveEditor()))
+    // Feed the editor's scope (lock-free; the editor reads it on the UI thread).
+    constexpr int downsampleFactor = 2;
+    for (int sample = 0; sample < buffer.getNumSamples(); sample += downsampleFactor)
     {
-        // Only send every 4th sample to reduce CPU usage
-        const int downsampleFactor = 4;
-        for (int sample = 0; sample < buffer.getNumSamples(); sample += downsampleFactor)
-        {
-            // Send the left channel or mono sum if multiple channels
-            float sampleValue = buffer.getSample(0, sample);
-            if (totalNumOutputChannels > 1) {
-                sampleValue = (sampleValue + buffer.getSample(1, sample)) * 0.5f;
-            }
-            editor->pushNextSample(sampleValue);
-        }
+        float v = buffer.getSample (0, sample);
+        if (totalNumOutputChannels > 1)
+            v = 0.5f * (v + buffer.getSample (1, sample));
+        scopeBuffer.push (v);
     }
 }
 

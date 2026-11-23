@@ -58,7 +58,15 @@ juce_add_plugin(SimpleSynth
 
 juce_generate_juce_header(SimpleSynth)
 
-file(GLOB SYNTH_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/Source/*.cpp")
+# Embedded fonts (IBM Plex Mono, SIL OFL - see Resources/Fonts/OFL.txt).
+juce_add_binary_data(SimpleSynthBinaryData
+    HEADER_NAME BinaryData.h
+    NAMESPACE BinaryData
+    SOURCES
+        Resources/Fonts/IBMPlexMono-Regular.ttf
+        Resources/Fonts/IBMPlexMono-SemiBold.ttf)
+
+file(GLOB_RECURSE SYNTH_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/Source/*.cpp")
 
 target_sources(SimpleSynth PRIVATE
     ${SYNTH_SOURCES}
@@ -83,6 +91,7 @@ endif()
 
 target_link_libraries(SimpleSynth
     PRIVATE
+        SimpleSynthBinaryData
         juce::juce_audio_utils
         juce::juce_audio_processors
         juce::juce_dsp

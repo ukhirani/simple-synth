@@ -26,35 +26,45 @@
       "on": "code"
     },
     {
-      "thing": "accent",
-      "value": "#FF5A1F",
-      "source": "dial"
-    },
-    {
-      "thing": "neutral",
-      "value": "#71767D",
-      "source": "dial"
-    },
-    {
       "thing": "--radius-full",
       "value": "0px",
       "source": "token"
     },
     {
-      "thing": "background-color",
-      "value": "#ff794a",
-      "source": "property",
-      "on": "progress-bar-fill",
+      "thing": "accent",
+      "value": "#FFFFFF",
+      "source": "dial"
+    },
+    {
+      "thing": "neutral",
+      "value": "#737373",
+      "source": "dial"
+    },
+    {
+      "thing": "--color-background-body",
+      "value": "#000000",
+      "source": "token",
       "mode": "dark"
     },
     {
-      "thing": "background-color",
-      "value": "#3a3e43",
-      "source": "property",
-      "on": "progress-bar-track",
+      "thing": "--color-background-card",
+      "value": "#000000",
+      "source": "token",
+      "mode": "dark"
+    },
+    {
+      "thing": "--color-background-surface",
+      "value": "#111111",
+      "source": "token",
+      "mode": "dark"
+    },
+    {
+      "thing": "--color-background-muted",
+      "value": "#0a0a0a",
+      "source": "token",
       "mode": "dark"
     }
   ],
   "lifted": [],
-  "palette": "c4c654fa956c081c4103dded3075a590cd185db2878c11b34bc885a8f2751081"
+  "palette": "ee943e8e15793fdcbc9278d16e7a4e1e44d69c196c5b32ba05e7769ba637e54d"
 }

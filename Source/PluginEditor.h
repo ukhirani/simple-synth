@@ -1,70 +1,52 @@
-/*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin editor.
-
-  ==============================================================================
-*/
-
 #pragma once
 
 #include <JuceHeader.h>
 
-#include "Chorus.h"
 #include "PluginProcessor.h"
 #include "Oscillator.h"
 #include "Envelope.h"
 #include "Filter.h"
-#include "ReverbComponent.h"
 #include "Crunch.h"
+#include "Chorus.h"
+#include "ReverbComponent.h"
 #include "Limiter.h"
 #include "PresetPanel.h"
+#include "UI/IndustrialLookAndFeel.h"
+#include "UI/Controls.h"
 
-//==============================================================================
-/**
-*/
-class SimpleSynthAudioProcessorEditor  : public juce::AudioProcessorEditor
-
+class SimpleSynthAudioProcessorEditor : public juce::AudioProcessorEditor
 {
 public:
-    SimpleSynthAudioProcessorEditor (SimpleSynthAudioProcessor&);
+    explicit SimpleSynthAudioProcessorEditor (SimpleSynthAudioProcessor&);
     ~SimpleSynthAudioProcessorEditor() override;
 
-    //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
+    void parentHierarchyChanged() override;
 
-    // Method to push audio samples to the visualizer
-    void pushNextSample(float sample) {
-        visualiserComponent.pushSample(&sample, 1);
-    }
-
+    static constexpr int defaultWidth  = 920;
+    static constexpr int defaultHeight = 700;
 
 private:
-
+    juce::SharedResourcePointer<IndustrialLookAndFeel> lookAndFeel;
 
     SimpleSynthAudioProcessor& processor;
-    Oscillator oscComponent;
-    Envelope envComponent;
-    Filter filterComponent;
-    AudioVisualiserComponent visualiserComponent;
-    ReverbComponent reverbComponent;
-    CrunchComponent crunchComponent;
-    ChorusComponent chorusComponent;
+
+    Oscillator       oscComponent;
+    Envelope         envComponent;
+    Filter           filterComponent;
+    CrunchComponent  crunchComponent;
+    ChorusComponent  chorusComponent;
+    ReverbComponent  reverbComponent;
     LimiterComponent limiterComponent;
 
+    ui::ModulePanel scopePanel { 8, "Output" };
+    ui::Scope       scope;
+
     PresetPanel presetPanel;
+    juce::TooltipWindow tooltips { this, 600 };
 
-
-
-
-    Rectangle<int> area;
-
-    
-
-
-
+    juce::Rectangle<int> topBar;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleSynthAudioProcessorEditor)
-
 };

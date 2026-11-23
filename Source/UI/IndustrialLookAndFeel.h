@@ -3,8 +3,8 @@
 #include <JuceHeader.h>
 #include "Theme.h"
 
-// LookAndFeel implementing the Astryx "industrial" tokens: flat fills,
-// 1px borders, square corners everywhere, mono captions, one accent colour.
+// LookAndFeel implementing the Astryx "industrial" tokens: black & white only,
+// flat fills, 1px borders, square corners everywhere, mono type.
 class IndustrialLookAndFeel : public juce::LookAndFeel_V4
 {
 public:
@@ -14,9 +14,6 @@ public:
     void drawRotarySlider (juce::Graphics&, int x, int y, int width, int height,
                            float sliderPosProportional, float rotaryStartAngle,
                            float rotaryEndAngle, juce::Slider&) override;
-
-    juce::Label* createSliderTextBox (juce::Slider&) override;
-    juce::Slider::SliderLayout getSliderLayout (juce::Slider&) override;
 
     // Buttons ----------------------------------------------------------------
     void drawButtonBackground (juce::Graphics&, juce::Button&, const juce::Colour& backgroundColour,
@@ -38,7 +35,7 @@ public:
     juce::Font getPopupMenuFont() override;
     int getPopupMenuBorderSize() override { return 1; }
 
-    // Labels & misc ----------------------------------------------------------
+    // Labels, windows, misc --------------------------------------------------
     juce::Font getLabelFont (juce::Label&) override;
     juce::Typeface::Ptr getTypefaceForFont (const juce::Font&) override;
 
@@ -53,6 +50,5 @@ public:
                         bool isScrollbarVertical, int thumbStartPosition, int thumbSize,
                         bool isMouseOver, bool isMouseDown) override;
 
-    // Property set on a TextButton to draw it as part of a segmented control.
-    static constexpr const char* segmentedProperty = "segmented";
+    void drawTooltip (juce::Graphics&, const juce::String& text, int width, int height) override;
 };

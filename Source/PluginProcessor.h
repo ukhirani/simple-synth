@@ -11,6 +11,7 @@
 #include <JuceHeader.h>
 #include "SynthVoice.h"
 #include "PresetManager.h"
+#include "UI/Controls.h"
 
 
 
@@ -54,6 +55,7 @@ public:
     void changeProgramName (int index, const juce::String& newName) override;
 
     Service::PresetManager& getPresetManger(){return presetManager;}
+    const ui::ScopeBuffer& getScopeBuffer() const { return scopeBuffer; }
 
     //==============================================================================
     void getStateInformation (juce::MemoryBlock& destData) override;
@@ -72,6 +74,7 @@ private:
     AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleSynthAudioProcessor)
     Service::PresetManager presetManager;
+    ui::ScopeBuffer scopeBuffer;
     Synthesiser mySynth;
     SynthVoice* myVoice;
 

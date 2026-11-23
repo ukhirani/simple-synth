@@ -6,31 +6,31 @@
 // Design tokens for the SimpleSynth editor.
 //
 // The values mirror the "industrial" Astryx theme used by the promo website
-// (website/themes/industrial): dark-only, square corners, IBM Plex Mono, one
-// signal-orange accent. Keep the two in sync when either changes.
+// (website/themes/industrial): dark-only, black & white only, square corners,
+// IBM Plex Mono. Keep the two in sync when either changes.
 namespace ui
 {
     namespace colour
     {
-        // --color-background-*
-        inline const juce::Colour body      { 0xff1a1c1f };
-        inline const juce::Colour surface   { 0xff23262a };
-        inline const juce::Colour raised    { 0xff2b2f34 };
-        inline const juce::Colour well      { 0xff141618 };
+        // --color-background-*  (black & white only)
+        inline const juce::Colour body      { 0xff000000 };
+        inline const juce::Colour surface   { 0xff0a0a0a };
+        inline const juce::Colour raised    { 0xff161616 };
+        inline const juce::Colour well      { 0xff000000 };
 
         // --color-border / --color-border-emphasized
-        inline const juce::Colour hairline  { 0x1affffff };
-        inline const juce::Colour border    { 0xff3a3e43 };
-        inline const juce::Colour borderHi  { 0xff4e5358 };
+        inline const juce::Colour hairline  { 0xff1f1f1f };
+        inline const juce::Colour border    { 0xff2e2e2e };
+        inline const juce::Colour borderHi  { 0xff515151 };
 
         // --color-text-*
         inline const juce::Colour text      { 0xffffffff };
-        inline const juce::Colour textDim   { 0xff999ea4 };
-        inline const juce::Colour textMuted { 0xff6b7076 };
+        inline const juce::Colour textDim   { 0xff9d9d9d };
+        inline const juce::Colour textMuted { 0xff5c5c5c };
 
-        // --color-accent (+ the lighter fill Astryx uses on dark tracks)
-        inline const juce::Colour accent    { 0xffff5a1f };
-        inline const juce::Colour accentHi  { 0xffff794a };
+        // --color-accent / --color-on-accent: white on black
+        inline const juce::Colour accent    { 0xffffffff };
+        inline const juce::Colour accentHi  { 0xffdddddd };
         inline const juce::Colour onAccent  { 0xff000000 };
     }
 
